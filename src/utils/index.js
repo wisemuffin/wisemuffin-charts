@@ -1,0 +1,8 @@
+export const getRandomNumberInRange = (min, max) =>
+  Math.random() * (max - min) + min;
+
+export const getRandomValue = (arr) =>
+  arr[Math.floor(getRandomNumberInRange(0, arr.length))];
+
+export const sentenceCase = (str) =>
+  [str.slice(0, 1).toUpperCase(), str.slice(1)].join("");

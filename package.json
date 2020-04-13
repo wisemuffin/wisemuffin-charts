@@ -1,0 +1,65 @@
+{
+  "name": "wisemuffin-charts",
+  "version": "1.0.0",
+  "description": "Made with create-react-library",
+  "author": "wisemuffin",
+  "license": "MIT",
+  "repository": "wisemuffin/wisemuffin-charts",
+  "main": "dist/index.js",
+  "module": "dist/index.modern.js",
+  "source": "src/index.js",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/microbundle-crl --no-compress --format modern,cjs",
+    "start": "./node_modules/.bin/microbundle-crl watch --no-compress --format modern,cjs",
+    "prepublishOnly": "./node_modules/.bin/run-s build",
+    "test": "./node_modules/.bin/run-s test:unit test:lint test:build",
+    "test:build": "./node_modules/.bin/run-s build",
+    "test:lint": "eslint .",
+    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:watch": "react-scripts test --env=jsdom",
+    "predeploy": "cd example && npm install && npm run build",
+    "deploy": "gh-pages -d example/build"
+  },
+  "dependencies": {
+    "d3": "^5.9.1",
+    "prop-types": "^15.7.2",
+    "react-svg-brush": "^1.0.0",
+    "styled-components": "^5.0.1"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0"
+  },
+  "devDependencies": {
+    "microbundle-crl": "^0.13.8",
+    "babel-eslint": "^10.0.3",
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "gh-pages": "^2.2.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
+    "resize-observer-polyfill": "^1.5.1",
+    "style-loader": "^0.23.1",
+    "file-loader": "^3.0.1"
+  },
+  "files": [
+    "dist"
+  ]
+}
