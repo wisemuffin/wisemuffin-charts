@@ -236,9 +236,9 @@ TimelineBrush.defaultProps = {
 
 const TimelineBrushStyle = styled(ChartGeneralStyle)`
   min-width: 500px;
-  width: calc(100% + 1em);
   position: relative;
   height: 200px;
+  flex: 1;
 `;
 
 export default TimelineBrush;

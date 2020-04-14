@@ -54,7 +54,7 @@ const App = () => {
       <h1>Weather Dashboard</h1>
       <ExampleComponent text="Create React Library Example 😄" />
       <div className="App__charts">
-        {/* <TimelineFilteredByBrush
+        <TimelineFilteredByBrush
           data={{
             series: [data.timeline, data.timeline2],
             dates: data.timeline.map(dateAccessor)
@@ -62,7 +62,7 @@ const App = () => {
           xAccessor={dateAccessor}
           yAccessor={temperatureAccessor}
           label="Temperature"
-        /> */}
+        />
         <BoxPlot
           data={data.scatter}
           xAccessor={humidityAccessor}
