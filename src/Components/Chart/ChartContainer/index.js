@@ -10,6 +10,7 @@ const Chart = ({ dimensions, children }) => {
     <ChartContainerStyle width={dimensions.width} height={dimensions.height}>
       <ChartContext.Provider value={dimensions}>
         <g
+          className="bounds"
           transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
         >
           {children}
@@ -20,11 +21,11 @@ const Chart = ({ dimensions, children }) => {
 };
 
 Chart.propTypes = {
-  dimensions: dimensionsPropsType,
+  dimensions: dimensionsPropsType
 };
 
 Chart.defaultProps = {
-  dimensions: {},
+  dimensions: {}
 };
 
 const ChartContainerStyle = styled.svg`

@@ -22,6 +22,8 @@ export { default as TimelineBrush } from "./Components/Chart/TimelineBrush";
 
 export { default as TimelineFilteredByBrush } from "./Components/Chart/TimelineFilteredByBrush";
 
+export { default as SankeyAnimated } from "./Components/Chart/SankeyAnimated";
+
 export {
   getTimelineData,
   getScatterData,
@@ -31,3 +33,5 @@ export {
 export { getRandomNumberInRange, getRandomValue, sentenceCase } from "./utils";
 
 export { useInterval } from "./Hooks/useInterval";
+export { useFetch } from "./Hooks/useFetch";
+export { useForm } from "./Hooks/useForm";
