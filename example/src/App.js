@@ -60,8 +60,9 @@ const App = () => {
     <div className="App">
       <h1>Weather Dashboard</h1>
       <ExampleComponent text="Create React Library Example 😄" />
-      <SankeyAnimated data={educationSankey} />
       <div className="App__charts">
+        <SankeyAnimated data={educationSankey} />
+
         <TimelineFilteredByBrush
           data={{
             series: [data.timeline, data.timeline2],

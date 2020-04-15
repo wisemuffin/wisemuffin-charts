@@ -19,19 +19,19 @@ import {
 
 const SankeyAnimated = ({ data: dataset }) => {
   const gradientId = useUniqueId("Histogram-gradient");
-  // const [ref, dimensions] = useChartDimensions({
-  //   marginBottom: 77
-  // });
-  const ref = useRef();
+  const [ref, dimensions] = useChartDimensions({
+    marginBottom: 77
+  });
+  // const ref = useRef();
 
   useEffect(() => {
     d3DoyoawThang();
     return () =>
       d3
         .select(ref.current)
-        .select(".bounds")
+        .select(".removableBounds")
         .remove();
-  }, []);
+  }, [dimensions]);
 
   // prep
 
@@ -95,24 +95,30 @@ const SankeyAnimated = ({ data: dataset }) => {
   }
 
   // Create chart dimensions
-  const width = d3.min([window.innerWidth * 0.9, 1200]);
-  let dimensions = {
-    width: width,
-    height: 500,
-    margin: {
-      top: 10,
-      right: 200,
-      bottom: 10,
-      left: 120
-    },
-    pathHeight: 50,
-    endsBarWidth: 15,
-    endingBarPadding: 3
-  };
-  dimensions.boundedWidth =
-    dimensions.width - dimensions.margin.left - dimensions.margin.right;
-  dimensions.boundedHeight =
-    dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+  // const width = d3.min([window.innerWidth * 0.9, 1200]);
+  // let dimensions = {
+  //   width: width,
+  //   height: 500,
+  //   margin: {
+  //     top: 10,
+  //     right: 200,
+  //     bottom: 10,
+  //     left: 120
+  //   },
+  //   pathHeight: 50,
+  //   endsBarWidth: 15,
+  //   endingBarPadding: 3
+  // };
+  // dimensions.boundedWidth =
+  //   dimensions.width - dimensions.margin.left - dimensions.margin.right;
+  // dimensions.boundedHeight =
+  //   dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+
+  (dimensions.pathHeight = 50),
+    (dimensions.endsBarWidth = 15),
+    (dimensions.endingBarPadding = 3);
+
+  console.log("dims: ", dimensions);
 
   // Create scales
 
@@ -160,7 +166,11 @@ const SankeyAnimated = ({ data: dataset }) => {
   const d3DoyoawThang = () => {
     // set bounds
 
-    const bounds = d3.select(ref.current).select(".bounds");
+    const bounds = d3
+      .select(ref.current)
+      .select(".bounds")
+      .append("g")
+      .attr("class", "removableBounds");
     // Draw periferals
     const startingLabelsGroup = bounds
       .append("g")
