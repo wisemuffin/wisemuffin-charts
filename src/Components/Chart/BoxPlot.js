@@ -17,7 +17,7 @@ import {
 
 const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
-const BoxPlot = ({ data, xAccessor, yAccessor, label }) => {
+const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
     marginBottom: 77
@@ -79,9 +79,16 @@ const BoxPlot = ({ data, xAccessor, yAccessor, label }) => {
           x={tooltip.x + dimensions.marginLeft}
           y={tooltip.y + dimensions.marginTop}
         >
-          <div>count: {tooltip.data.length}</div>
-          <div>xAccessor: {tooltip.data.x0}</div>
-          <div>yAccessor: {yAccessor(tooltip.data)}</div>
+          {!tooltip.data.quartiles && (
+            <div>
+              <div>
+                {xLabel}: {xAccessor(tooltip.data)}
+              </div>
+              <div>
+                {yLabel}: {yAccessor(tooltip.data)}
+              </div>
+            </div>
+          )}
           {/* <div>all data: {JSON.stringify(tooltip.data)}</div> */}
           {tooltip.data.quartiles && (
             <div>
@@ -100,13 +107,13 @@ const BoxPlot = ({ data, xAccessor, yAccessor, label }) => {
           dimensions={dimensions}
           dimension="x"
           scale={xScale}
-          label={label}
+          label={showLabel && xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
-          label="Count"
+          label={showLabel && yLabel}
         />
 
         {bins.map(
@@ -167,19 +174,20 @@ BoxPlot.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
   xLabel: PropTypes.string,
-  yLabel: PropTypes.string
+  yLabel: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 BoxPlot.defaultProps = {
   xAccessor: d => d.x,
-  yAccessor: d => d.y
+  yAccessor: d => d.y,
+  showLabel: true
 };
 
 const BoxPlotStyle = styled(ChartGeneralStyle)`
   height: 500px;
   flex: 1;
   min-width: 500px;
-
   position: relative;
 `;
 

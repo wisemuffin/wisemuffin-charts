@@ -13,20 +13,27 @@ import Tootltip from "./ChartElements/Tooltip";
 import {
   useChartDimensions,
   accessorPropsType,
-  useUniqueId,
+  useUniqueId
 } from "./ChartContainer/utils";
 
 const formatDate = d3.timeFormat("%-b %-d");
 const gradientColors = ["#9980fa", "rgb(226, 222, 243)"];
 
-const Timeline = ({ data, xAccessor, yAccessor, label }) => {
+const Timeline = ({
+  data,
+  xAccessor,
+  yAccessor,
+  xLabel,
+  yLabel,
+  showLabel
+}) => {
   const [tooltip, setTooltip] = useState(false);
   const [ref, dimensions] = useChartDimensions();
   const gradientId = useUniqueId("Timeline-gradient");
 
   const xScale = d3
     .scaleTime()
-    .domain(d3.extent(data.dates, (d) => d))
+    .domain(d3.extent(data.dates, d => d))
     .range([0, dimensions.boundedWidth]);
 
   const yScale = d3
@@ -34,22 +41,22 @@ const Timeline = ({ data, xAccessor, yAccessor, label }) => {
     .domain([
       d3.min(
         data.series.map(
-          (series) => d3.min(series, yAccessor),
-          (d) => d
+          series => d3.min(series, yAccessor),
+          d => d
         )
       ),
       d3.max(
         data.series.map(
-          (series) => d3.max(series, yAccessor),
-          (d) => d
+          series => d3.max(series, yAccessor),
+          d => d
         )
-      ),
+      )
     ])
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  const xAccessorScaled = (d) => xScale(xAccessor(d));
-  const yAccessorScaled = (d) => yScale(yAccessor(d));
+  const xAccessorScaled = d => xScale(xAccessor(d));
+  const yAccessorScaled = d => yScale(yAccessor(d));
   const y0AccessorScaled = yScale(yScale.domain()[0]);
   const keyAccessor = (d, i) => i;
 
@@ -61,16 +68,25 @@ const Timeline = ({ data, xAccessor, yAccessor, label }) => {
           x={tooltip.x + dimensions.marginLeft}
           y={tooltip.y + dimensions.marginTop}
         >
-          <div>xAccessor: {`${xAccessor(tooltip.data)}`}</div>
-          <div>yAccessor: {yAccessor(tooltip.data)}</div>
+          <div>
+            {xLabel}: {`${xAccessor(tooltip.data)}`}
+          </div>
+          <div>
+            {yLabel}: {yAccessor(tooltip.data)}
+          </div>
         </Tootltip>
       )}
       <ChartContainer dimensions={dimensions}>
         <defs>
           <Gradient id={gradientId} colors={gradientColors} x2="0%" y2="100%" />
         </defs>
-        <Axis dimension="x" scale={xScale} formatTick={formatDate} />
-        <Axis dimension="y" scale={yScale} label={label} />
+        <Axis
+          dimension="x"
+          scale={xScale}
+          formatTick={formatDate}
+          label={showLabel && xLabel}
+        />
+        <Axis dimension="y" scale={yScale} label={showLabel && yLabel} />
         {data &&
           data.series.map((series, i) => (
             <g key={i}>
@@ -107,12 +123,15 @@ const Timeline = ({ data, xAccessor, yAccessor, label }) => {
 Timeline.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
-  label: PropTypes.string,
+  xLabel: PropTypes.string,
+  yLabel: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 Timeline.defaultProps = {
-  xAccessor: (d) => d.x,
-  yAccessor: (d) => d.y,
+  xAccessor: d => d.x,
+  yAccessor: d => d.y,
+  showLabel: true
 };
 
 const TimelineStyle = styled(ChartGeneralStyle)`

@@ -22,7 +22,14 @@ import {
 const formatDate = d3.timeFormat("%-b %-d");
 const gradientColors = ["#9980fa", "rgb(226, 222, 243)"];
 
-const TimelineFilteredByBrush = ({ data, xAccessor, yAccessor, label }) => {
+const TimelineFilteredByBrush = ({
+  data,
+  xAccessor,
+  yAccessor,
+  xLabel,
+  yLabel,
+  showLabel
+}) => {
   const [tooltip, setTooltip] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
   const [ref, dimensions] = useChartDimensions();
@@ -65,8 +72,12 @@ const TimelineFilteredByBrush = ({ data, xAccessor, yAccessor, label }) => {
             x={tooltip.x + dimensions.marginLeft}
             y={tooltip.y + dimensions.marginTop}
           >
-            <div>xAccessor: {`${xAccessor(tooltip.data)}`}</div>
-            <div>yAccessor: {yAccessor(tooltip.data)}</div>
+            <div>
+              {xLabel}: {`${xAccessor(tooltip.data)}`}
+            </div>
+            <div>
+              {yLabel}: {yAccessor(tooltip.data)}
+            </div>
           </Tootltip>
         )}
         <ChartContainer dimensions={dimensions}>
@@ -78,8 +89,13 @@ const TimelineFilteredByBrush = ({ data, xAccessor, yAccessor, label }) => {
               y2="100%"
             />
           </defs>
-          <Axis dimension="x" scale={xScale} formatTick={formatDate} />
-          <Axis dimension="y" scale={yScale} label={label} />
+          <Axis
+            dimension="x"
+            scale={xScale}
+            formatTick={formatDate}
+            label={showLabel && xLabel}
+          />
+          <Axis dimension="y" scale={yScale} label={showLabel && yLabel} />
           {filteredData &&
             filteredData.series.map((series, i) => (
               <g key={i}>
@@ -119,7 +135,7 @@ const TimelineFilteredByBrush = ({ data, xAccessor, yAccessor, label }) => {
         data={data}
         xAccessor={xAccessor}
         yAccessor={yAccessor}
-        label={label}
+        xLabel={xLabel}
         setFilteredData={setFilteredData}
       />
     </div>
@@ -129,12 +145,15 @@ const TimelineFilteredByBrush = ({ data, xAccessor, yAccessor, label }) => {
 TimelineFilteredByBrush.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
-  label: PropTypes.string
+  xLabel: PropTypes.string,
+  yLabel: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 TimelineFilteredByBrush.defaultProps = {
   xAccessor: d => d.x,
-  yAccessor: d => d.y
+  yAccessor: d => d.y,
+  showLabel: true
 };
 
 const TimelineFilteredByBrushStyle = styled(ChartGeneralStyle)`

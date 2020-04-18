@@ -70,13 +70,14 @@ const App = () => {
           }}
           xAccessor={dateAccessor}
           yAccessor={temperatureAccessor}
-          label="Temperature"
+          xLabel="Temperature"
         />
         <BoxPlot
           data={data.scatter}
           xAccessor={humidityAccessor}
           yAccessor={temperatureAccessor}
-          label="Humidity"
+          xLabel="Humidity"
+          yLabel="temp"
         />
         <Pie
           data={data.categorical}
@@ -90,6 +91,7 @@ const App = () => {
           yLabel="Player"
           xLabel="Score"
           scaleBandAxis="y"
+          showLabel={false}
         />
         <BarChart
           data={data.categorical}
@@ -117,7 +119,10 @@ const App = () => {
         <Histogram
           data={data.scatter}
           xAccessor={humidityAccessor}
-          label="Humidity"
+          xLabel="Humidity"
+          xScaleType="log"
+          numberOfThresholds={20}
+          lockBinsToTicks={false}
         />
       </div>
     </div>

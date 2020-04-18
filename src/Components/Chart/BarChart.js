@@ -13,15 +13,23 @@ import {
   useChartDimensions,
   accessorPropsType,
   callAccessor,
-  useUniqueId,
+  useUniqueId
 } from "./ChartContainer/utils";
 
 const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
-const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
+const BarChart = ({
+  data,
+  xAccessor,
+  yAccessor,
+  xLabel,
+  yLabel,
+  showLabel,
+  scaleBandAxis
+}) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77,
+    marginBottom: 77
   });
   const [tooltip, setTooltip] = useState(false);
 
@@ -39,7 +47,7 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
     .scaleLinear()
     .domain([
       0,
-      d3.max(data.map(scaleBandAxis === "x" ? yAccessor : xAccessor)),
+      d3.max(data.map(scaleBandAxis === "x" ? yAccessor : xAccessor))
     ])
     .range(
       scaleBandAxis === "x"
@@ -51,8 +59,8 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
   const xScale = scaleBandAxis === "x" ? bandScale : linearScale;
   const yScale = scaleBandAxis === "x" ? linearScale : bandScale;
 
-  const xAccessorScaled = (d) => xScale(xAccessor(d));
-  const yAccessorScaled = (d) => yScale(yAccessor(d));
+  const xAccessorScaled = d => xScale(xAccessor(d));
+  const yAccessorScaled = d => yScale(yAccessor(d));
   // const widthAccessorScaled = (d) =>
   //   scaleBandAxis === "x" ? xScale.step() : yScale.step();
   // const heightAccessorScaled = (d) =>
@@ -65,9 +73,9 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
   //   dimensions.boundedHeight -
   //   (scaleBandAxis === "x" ? yScale(yAccessor(d)) : yScale.step());
 
-  const widthAccessorScaled = (d) =>
+  const widthAccessorScaled = d =>
     scaleBandAxis === "x" ? xScale.step() : xScale(xAccessor(d));
-  const heightAccessorScaled = (d) =>
+  const heightAccessorScaled = d =>
     scaleBandAxis === "x"
       ? dimensions.boundedHeight - yScale(yAccessor(d))
       : yScale.step();
@@ -82,8 +90,12 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
           x={tooltip.x + dimensions.marginLeft}
           y={tooltip.y + dimensions.marginTop}
         >
-          <div>xAccessor: {xAccessor(tooltip.data)}</div>
-          <div>yAccessor: {yAccessor(tooltip.data)}</div>
+          <div>
+            {xLabel}: {xAccessor(tooltip.data)}
+          </div>
+          <div>
+            {yLabel}: {yAccessor(tooltip.data)}
+          </div>
         </Tootltip>
       )}
       <ChartContainer dimensions={dimensions}>
@@ -94,15 +106,15 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
           dimensions={dimensions}
           dimension="x"
           scale={xScale}
-          label={label}
-          formatTick={scaleBandAxis === "x" ? (d) => d : d3.format(",")}
+          label={showLabel && xLabel}
+          formatTick={scaleBandAxis === "x" ? d => d : d3.format(",")}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
-          label="Count"
-          formatTick={scaleBandAxis === "x" ? d3.format(",") : (d) => d}
+          label={showLabel && yLabel}
+          formatTick={scaleBandAxis === "x" ? d3.format(",") : d => d}
         />
         <Bars
           data={data}
@@ -125,14 +137,16 @@ const BarChart = ({ data, xAccessor, yAccessor, label, scaleBandAxis }) => {
 BarChart.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
-  xLabel: PropTypes.string,
-  yLabel: PropTypes.string,
+  xLabel: PropTypes.string.isRequired,
+  yLabel: PropTypes.string.isRequired,
+  showLabel: PropTypes.bool
 };
 
 BarChart.defaultProps = {
-  xAccessor: (d) => d.x,
-  yAccessor: (d) => d.y,
+  xAccessor: d => d.x,
+  yAccessor: d => d.y,
   scaleBandAxis: "x",
+  showLabel: true
 };
 
 const BarChartStyle = styled(ChartGeneralStyle)`

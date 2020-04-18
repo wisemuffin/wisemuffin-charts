@@ -12,35 +12,62 @@ import Tootltip from "./ChartElements/Tooltip";
 import {
   useChartDimensions,
   accessorPropsType,
-  useUniqueId,
+  useUniqueId
 } from "./ChartContainer/utils";
 
 const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
-const Histogram = ({ data, xAccessor, label }) => {
+const Histogram = ({
+  data,
+  xAccessor,
+  xLabel,
+  yLabel,
+  xScaleType,
+  numberOfThresholds,
+  lockBinsToTicks
+}) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77,
+    marginBottom: 77
   });
   const [tooltip, setTooltip] = useState(false);
 
-  const numberOfThresholds = 9;
+  let xScale;
 
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, xAccessor))
-    .range([0, dimensions.boundedWidth])
-    .nice(numberOfThresholds);
+  switch (xScaleType) {
+    case "linear":
+      xScale = d3
+        .scaleLinear()
+        .domain(d3.extent(data, xAccessor))
+        .range([0, dimensions.boundedWidth])
+        .nice(numberOfThresholds);
+      break;
+    case "log":
+      xScale = d3
+        .scaleLog()
+        .domain(d3.extent(data, xAccessor))
+        .range([0, dimensions.boundedWidth])
+        .nice(numberOfThresholds);
+      break;
+    default:
+      xScale = d3
+        .scaleLinear()
+        .domain(d3.extent(data, xAccessor))
+        .range([0, dimensions.boundedWidth])
+        .nice(numberOfThresholds);
+  }
 
   const binsGenerator = d3
     .histogram()
     .domain(xScale.domain())
     .value(xAccessor)
-    .thresholds(xScale.ticks(numberOfThresholds));
+    .thresholds(
+      lockBinsToTicks ? xScale.ticks(numberOfThresholds) : numberOfThresholds
+    );
 
   const bins = binsGenerator(data);
 
-  const yAccessor = (d) => d.length;
+  const yAccessor = d => d.length;
   const yScale = d3
     .scaleLinear()
     .domain([0, d3.max(bins, yAccessor)])
@@ -49,10 +76,10 @@ const Histogram = ({ data, xAccessor, label }) => {
 
   const barPadding = 2;
 
-  const xAccessorScaled = (d) => xScale(d.x0) + barPadding;
-  const yAccessorScaled = (d) => yScale(yAccessor(d));
-  const widthAccessorScaled = (d) => xScale(d.x1) - xScale(d.x0) - barPadding;
-  const heightAccessorScaled = (d) =>
+  const xAccessorScaled = d => xScale(d.x0) + barPadding;
+  const yAccessorScaled = d => yScale(yAccessor(d));
+  const widthAccessorScaled = d => xScale(d.x1) - xScale(d.x0) - barPadding;
+  const heightAccessorScaled = d =>
     dimensions.boundedHeight - yScale(yAccessor(d));
   const keyAccessor = (d, i) => i;
 
@@ -64,9 +91,12 @@ const Histogram = ({ data, xAccessor, label }) => {
           x={tooltip.x + dimensions.marginLeft}
           y={tooltip.y + dimensions.marginTop}
         >
-          <div>count: {tooltip.data.length}</div>
-          <div>xAccessor: {tooltip.data.x0}</div>
-          <div>yAccessor: {yAccessor(tooltip.data)}</div>
+          <div>
+            {xLabel}: {tooltip.data.x0}
+          </div>
+          <div>
+            {yLabel}: {yAccessor(tooltip.data)}
+          </div>
         </Tootltip>
       )}
       <ChartContainer dimensions={dimensions}>
@@ -77,13 +107,13 @@ const Histogram = ({ data, xAccessor, label }) => {
           dimensions={dimensions}
           dimension="x"
           scale={xScale}
-          label={label}
+          label={xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
-          label="Count"
+          label={yLabel}
         />
         <Bars
           data={bins}
@@ -106,18 +136,24 @@ Histogram.propTypes = {
   yAccessor: accessorPropsType,
   xLabel: PropTypes.string,
   yLabel: PropTypes.string,
+  numberOfThresholds: PropTypes.number,
+  xScaleType: PropTypes.string,
+  lockBinsToTicks: PropTypes.bool
 };
 
 Histogram.defaultProps = {
-  xAccessor: (d) => d.x,
-  yAccessor: (d) => d.y,
+  xAccessor: d => d.x,
+  yAccessor: d => d.y,
+  yLabel: "count",
+  numberOfThresholds: 10,
+  xScaleType: "linear",
+  lockBinsToTicks: true
 };
 
 const HistogramStyle = styled(ChartGeneralStyle)`
   height: 500px;
   flex: 1;
   min-width: 500px;
-
   position: relative;
 `;
 

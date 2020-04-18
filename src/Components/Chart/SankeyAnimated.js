@@ -31,7 +31,7 @@ const SankeyAnimated = ({ data: dataset }) => {
         .select(ref.current)
         .select(".removableBounds")
         .remove();
-  }, [dimensions]);
+  }, [dimensions, dataset]);
 
   // prep
 
@@ -93,26 +93,6 @@ const SankeyAnimated = ({ data: dataset }) => {
       yJitter: getRandomNumberInRange(-15, 15)
     };
   }
-
-  // Create chart dimensions
-  // const width = d3.min([window.innerWidth * 0.9, 1200]);
-  // let dimensions = {
-  //   width: width,
-  //   height: 500,
-  //   margin: {
-  //     top: 10,
-  //     right: 200,
-  //     bottom: 10,
-  //     left: 120
-  //   },
-  //   pathHeight: 50,
-  //   endsBarWidth: 15,
-  //   endingBarPadding: 3
-  // };
-  // dimensions.boundedWidth =
-  //   dimensions.width - dimensions.margin.left - dimensions.margin.right;
-  // dimensions.boundedHeight =
-  //   dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
   (dimensions.pathHeight = 50),
     (dimensions.endsBarWidth = 15),
@@ -346,7 +326,8 @@ const SankeyAnimated = ({ data: dataset }) => {
         .attr("fill", d => colorScale(sesAccessor(d)))
         .transition()
         .duration(100)
-        .style("opacity", d => (xScale(xProgressAccessor(d)) < 10 ? 0 : 1));
+        .style("opacity", d => (xScale(xProgressAccessor(d)) < 10 ? 0 : 1))
+        .style("mix-blend-mode", "multiply");
 
       const endingGroups = educationIds.map(endId =>
         people.filter(
@@ -489,8 +470,8 @@ const CategoryPath = styled.path`
   stroke-width: ${props => props.dimensions.pathHeight};
 `;
 
-const FemaleMarker = styled.circle`
-  opacity: 1;
-`;
+// const MaleMarker = styled.circle`
+//   opacity: 1;
+// `;
 
 export default SankeyAnimated;

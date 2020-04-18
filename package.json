@@ -23,14 +23,13 @@
     "predeploy": "cd example && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
   },
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.0.0",
     "d3": "^5.9.1",
     "prop-types": "^15.7.2",
     "react-svg-brush": "^1.0.0",
     "styled-components": "^5.0.1"
-  },
-  "peerDependencies": {
-    "react": "^16.0.0"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.8",

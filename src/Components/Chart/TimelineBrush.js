@@ -23,7 +23,9 @@ const TimelineBrush = ({
   data,
   xAccessor,
   yAccessor,
-  label,
+  xLabel,
+  yLabel,
+  showLabel,
   setFilteredData
 }) => {
   const [ref, dimensions] = useChartDimensions();
@@ -105,7 +107,6 @@ const TimelineBrush = ({
       dates: updatedFilteredDates,
       series: updatedFilteredSeries
     };
-    console.log("updating the filterd date");
 
     setFilteredData(updatedFilteredData);
   }, [brushSelectionFilter]);
@@ -143,8 +144,13 @@ const TimelineBrush = ({
               y2="100%"
             />
           </defs>
-          <Axis dimension="x" scale={xScale} formatTick={formatDate} />
-          <Axis dimension="y" scale={yScale} label={label} />
+          <Axis
+            dimension="x"
+            scale={xScale}
+            formatTick={formatDate}
+            label={showLabel && xLabel}
+          />
+          <Axis dimension="y" scale={yScale} label={showLabel && yLabel} />
           {data &&
             data.series.map((series, i) => (
               <g key={i}>
@@ -226,12 +232,15 @@ const TimelineBrush = ({
 TimelineBrush.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
-  label: PropTypes.string
+  xLabel: PropTypes.string,
+  yLabel: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 TimelineBrush.defaultProps = {
   xAccessor: d => d.x,
-  yAccessor: d => d.y
+  yAccessor: d => d.y,
+  showLabel: true
 };
 
 const TimelineBrushStyle = styled(ChartGeneralStyle)`

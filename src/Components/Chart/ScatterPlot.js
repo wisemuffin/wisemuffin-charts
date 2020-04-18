@@ -10,9 +10,16 @@ import Axis from "./ChartElements/Axis";
 import Tootltip from "./ChartElements/Tooltip";
 import { useChartDimensions, accessorPropsType } from "./ChartContainer/utils";
 
-const ScatterPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel }) => {
+const ScatterPlot = ({
+  data,
+  xAccessor,
+  yAccessor,
+  xLabel,
+  yLabel,
+  showLabel
+}) => {
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77,
+    marginBottom: 77
   });
   const [tooltip, setTooltip] = useState(false);
 
@@ -28,8 +35,8 @@ const ScatterPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel }) => {
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  const xAccessorScaled = (d) => xScale(xAccessor(d));
-  const yAccessorScaled = (d) => yScale(yAccessor(d));
+  const xAccessorScaled = d => xScale(xAccessor(d));
+  const yAccessorScaled = d => yScale(yAccessor(d));
   const keyAccessor = (d, i) => i;
 
   return (
@@ -42,8 +49,12 @@ const ScatterPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel }) => {
         >
           {/* <div>tooltip: {JSON.stringify(tooltip)}</div> */}
           <div>count: {tooltip.data.length}</div>
-          <div>xAccessor: {xAccessor(tooltip.data)}</div>
-          <div>yAccessor: {yAccessor(tooltip.data)}</div>
+          <div>
+            {xLabel}: {xAccessor(tooltip.data)}
+          </div>
+          <div>
+            {yLabel}: {yAccessor(tooltip.data)}
+          </div>
         </Tootltip>
       )}
       <ChartContainer dimensions={dimensions}>
@@ -51,13 +62,13 @@ const ScatterPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel }) => {
           dimensions={dimensions}
           dimension="x"
           scale={xScale}
-          label={xLabel}
+          label={showLabel && xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
-          label={yLabel}
+          label={showLabel && yLabel}
         />
         <Circles
           data={data}
@@ -77,11 +88,13 @@ ScatterPlot.propTypes = {
   yAccessor: accessorPropsType,
   xLabel: PropTypes.string,
   yLabel: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 ScatterPlot.defaultProps = {
-  xAccessor: (d) => d.x,
-  yAccessor: (d) => d.y,
+  xAccessor: d => d.x,
+  yAccessor: d => d.y,
+  showLabel: true
 };
 
 const ScatterPlotStyle = styled(ChartGeneralStyle)`
