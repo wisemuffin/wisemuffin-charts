@@ -4,11 +4,16 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "react": "file:../node_modules/react",
-    "react-dom": "file:../node_modules/react-dom",
-    "react-scripts": "file:../node_modules/react-scripts",
-    "d3": "file:../node_modules/d3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "d3": "^5.9.1",
+    "prop-types": "^15.7.2",
+    "react-svg-brush": "^1.0.0",
+    "styled-components": "^5.0.1",
     "wisemuffin-charts": "file:.."
+  },
+  "devDependencies": {
+    "react-scripts": "^3.4.1"
   },
   "scripts": {
     "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
