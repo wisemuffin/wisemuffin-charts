@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import * as d3 from "d3";
+import React, { useState } from "react";
+// import * as d3 from "d3";
 
 import { ExampleComponent } from "wisemuffin-charts";
 
@@ -10,9 +10,10 @@ import {
   BarChart,
   Pie,
   BoxPlot,
-  TimelineBrush,
+  // TimelineBrush,
   TimelineFilteredByBrush,
-  SankeyAnimated
+  SankeyAnimated,
+  Gauge
 } from "wisemuffin-charts";
 
 import {
@@ -21,12 +22,12 @@ import {
   getCategoricalData
 } from "wisemuffin-charts";
 
-import { useInterval, useFetch } from "wisemuffin-charts";
+import { useInterval } from "wisemuffin-charts";
 
 import educationSankey from "./education.json";
 import "./index.css";
 
-const parseDate = d3.timeParse("%m/%d/%Y");
+// const parseDate = d3.timeParse("%m/%d/%Y");
 const dateAccessor = d => d.date;
 const temperatureAccessor = d => d.temperature;
 const humidityAccessor = d => d.humidity;
@@ -51,16 +52,17 @@ const App = () => {
     setData(getData());
   }, 40000);
 
-  const { data: dataKanye, loading: loadingKanye } = useFetch(
-    // "./education.json"
-    "https://api.kanye.rest"
-  );
+  // const { data: dataKanye, loading: loadingKanye } = useFetch(
+  //   // "./education.json"
+  //   "https://api.kanye.rest"
+  // );
 
   return (
     <div className="App">
       <h1>Weather Dashboard</h1>
       <ExampleComponent text="Create React Library Example 😄" />
       <div className="App__charts">
+        <Gauge />
         <SankeyAnimated data={educationSankey} />
 
         <TimelineFilteredByBrush

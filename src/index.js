@@ -24,6 +24,8 @@ export { default as TimelineFilteredByBrush } from "./Components/Chart/TimelineF
 
 export { default as SankeyAnimated } from "./Components/Chart/SankeyAnimated";
 
+export { default as Gauge } from "./Components/Chart/Gauge";
+
 export {
   getTimelineData,
   getScatterData,
