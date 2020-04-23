@@ -62,7 +62,7 @@ const App = () => {
       <h1>Weather Dashboard</h1>
       <ExampleComponent text="Create React Library Example 😄" />
       <div className="App__charts">
-        <Gauge />
+        <Gauge label="myMetric" units={"cm"} />
         <SankeyAnimated data={educationSankey} />
 
         <TimelineFilteredByBrush
