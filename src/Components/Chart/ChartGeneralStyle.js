@@ -1,12 +1,11 @@
 import styled from "styled-components";
+
 export const ChartGeneralStyle = styled.div`
   background: white;
   overflow: visible;
   margin-bottom: 2em;
   margin-right: 2em;
 `;
-// padding: 0.6em 1em;
-//margin: 0.5em;
 
 export const Text = styled.text`
   fill: #95a5a6;

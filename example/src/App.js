@@ -63,6 +63,8 @@ const App = () => {
       <ExampleComponent text="Create React Library Example 😄" />
       <div className="App__charts">
         <Gauge label="myMetric" units={"cm"} />
+        <Gauge label="myMetric" value={90} units={"%"} max={100} />
+
         <SankeyAnimated data={educationSankey} />
 
         <TimelineFilteredByBrush

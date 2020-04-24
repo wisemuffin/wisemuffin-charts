@@ -2,8 +2,11 @@ import React from "react";
 import { arc } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { format } from "d3-format";
+import styled from "styled-components";
 
 import { getCoordsOnArc } from "../../utils/";
+import { ChartGeneralStyle } from "./ChartGeneralStyle";
+import { MetricValue, MetricLabel, MetricUnit } from "./ChartStyles";
 
 const Gauge = ({
   value = 50,
@@ -54,11 +57,7 @@ const Gauge = ({
   );
 
   return (
-    <div
-      style={{
-        textAlign: "center"
-      }}
-    >
+    <GaugeStyle>
       <svg
         style={{ overflow: "visible" }}
         width="9em"
@@ -99,43 +98,21 @@ const Gauge = ({
           fill="#6a6a85"
         />
       </svg>
-      <div
-        style={{
-          marginTop: "0.4em",
-          fontSize: "3em",
-          lineHeight: "1em",
-          fontWeight: "900",
-          fontFeatureSettings: "'zero', 'tnum' 1"
-        }}
-      >
-        {format(",")(value)}
-      </div>
+      <MetricValue>{format(",")(value)}</MetricValue>
 
-      {!!label && (
-        <div
-          style={{
-            color: "#8b8ba7",
-            marginTop: "0.6em",
-            fontSize: "1.3em",
-            lineHeight: "1.3em",
-            fontWeight: "700"
-          }}
-        >
-          {label}
-        </div>
-      )}
-      {!!units && (
-        <div
-          style={{
-            color: "#8b8ba7",
-            lineHeight: "1.3em",
-            fontWeight: "300"
-          }}
-        >
-          {units}
-        </div>
-      )}
-    </div>
+      {!!label && <MetricLabel>{label}</MetricLabel>}
+      {!!units && <MetricUnit>{units}</MetricUnit>}
+    </GaugeStyle>
   );
 };
+
+const GaugeStyle = styled(ChartGeneralStyle)`
+  text-align: center;
+  flex: 1;
+  position: relative;
+  max-width: 12em;
+  min-width: 12em;
+  padding: 2em;
+`;
+
 export default Gauge;
