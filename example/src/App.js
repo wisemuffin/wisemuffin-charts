@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import * as d3 from "d3";
+import * as d3 from "d3";
 
 import { ExampleComponent } from "wisemuffin-charts";
 
@@ -13,7 +13,8 @@ import {
   // TimelineBrush,
   TimelineFilteredByBrush,
   SankeyAnimated,
-  Gauge
+  Gauge,
+  HeatMap
 } from "wisemuffin-charts";
 
 import {
@@ -25,7 +26,10 @@ import {
 import { useInterval } from "wisemuffin-charts";
 
 import educationSankey from "./education.json";
+import heatMapData from "./heatMap";
 import "./index.css";
+
+import { testData } from "./testData";
 
 // const parseDate = d3.timeParse("%m/%d/%Y");
 const dateAccessor = d => d.date;
@@ -43,8 +47,10 @@ const getData = () => ({
   pie: [
     { value: 92 - 34, label: "Code lines" },
     { value: 34, label: "Empty lines" }
-  ]
+  ],
+  heatMap: heatMapData
 });
+
 const App = () => {
   const [data, setData] = useState(getData());
 
@@ -57,11 +63,50 @@ const App = () => {
   //   "https://api.kanye.rest"
   // );
 
+  const heatMapDataSetup = () => {
+    const heatMapData = data.heatMap.sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
+    const dateValues = heatMapData.map(dv => ({
+      date: d3.timeDay(new Date(dv.date)),
+      value: Number(dv.value)
+    }));
+
+    dateValues.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+    const years = d3
+      .nest()
+      .key(d => d.date.getUTCFullYear())
+      .entries(dateValues)
+      .reverse();
+
+    const filteredYears = years.filter(year => parseInt(year.key) >= 2017);
+
+    return filteredYears;
+  };
+
   return (
     <div className="App">
       <h1>Weather Dashboard</h1>
       <ExampleComponent text="Create React Library Example 😄" />
       <div className="App__charts">
+        <HeatMap
+          data={heatMapDataSetup()}
+          xAccessor={d => d.date}
+          yAccessor={d => d.value}
+          xLabel="date"
+          yLabel="value"
+        />
+        <Histogram
+          data={testData.filter(d => d.metricvalue)}
+          xAccessor={d => d.metricvalue}
+          xLabel="Humidity"
+          xScaleType="log"
+          logBase={2}
+          numberOfThresholds={200}
+          lockBinsToTicks={false}
+        />
+
         <Gauge label="myMetric" units={"cm"} />
         <Gauge label="myMetric" value={90} units={"%"} max={100} />
 

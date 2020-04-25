@@ -24,7 +24,8 @@ const Histogram = ({
   yLabel,
   xScaleType,
   numberOfThresholds,
-  lockBinsToTicks
+  lockBinsToTicks,
+  logBase
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -45,6 +46,7 @@ const Histogram = ({
     case "log":
       xScale = d3
         .scaleLog()
+        .base(logBase ? logBase : 10)
         .domain(d3.extent(data, xAccessor))
         .range([0, dimensions.boundedWidth])
         .nice(numberOfThresholds);

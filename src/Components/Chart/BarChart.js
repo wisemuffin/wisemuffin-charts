@@ -113,7 +113,7 @@ const BarChart = ({
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
-          label={showLabel && yLabel}
+          label={yLabel}
           formatTick={scaleBandAxis === "x" ? d3.format(",") : d => d}
         />
         <Bars
