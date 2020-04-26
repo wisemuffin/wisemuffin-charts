@@ -25,7 +25,10 @@ const Histogram = ({
   xScaleType,
   numberOfThresholds,
   lockBinsToTicks,
-  logBase
+  logBase,
+  nice = true,
+  extraBar // array of the data that was filtered out due to long tail
+  // want to change this to filter within hist
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -40,24 +43,23 @@ const Histogram = ({
       xScale = d3
         .scaleLinear()
         .domain(d3.extent(data, xAccessor))
-        .range([0, dimensions.boundedWidth])
-        .nice(numberOfThresholds);
+        .range([0, dimensions.boundedWidth]);
       break;
     case "log":
       xScale = d3
         .scaleLog()
         .base(logBase ? logBase : 10)
         .domain(d3.extent(data, xAccessor))
-        .range([0, dimensions.boundedWidth])
-        .nice(numberOfThresholds);
+        .range([0, dimensions.boundedWidth]);
       break;
     default:
       xScale = d3
         .scaleLinear()
         .domain(d3.extent(data, xAccessor))
-        .range([0, dimensions.boundedWidth])
-        .nice(numberOfThresholds);
+        .range([0, dimensions.boundedWidth]);
   }
+
+  nice && xScale.nice(numberOfThresholds);
 
   const binsGenerator = d3
     .histogram()
@@ -68,6 +70,22 @@ const Histogram = ({
     );
 
   const bins = binsGenerator(data);
+
+  // extraBar
+
+  console.log("bin: ", bins[bins.length - 1].x0);
+  console.log("extraBar: ", extraBar);
+
+  // add an extra bin if long tail
+
+  let extraBarBin = [];
+  if (extraBar) {
+    const widthExtraBar = 1; //bins[bins.length - 1].x1 - bins[bins.length - 1].x0;
+    extraBarBin = [...extraBar];
+    extraBarBin.x0 = bins[bins.length - 1].x1;
+    extraBarBin.x1 = bins[bins.length - 1].x1 + widthExtraBar;
+    console.log("extraBarBin", extraBarBin);
+  }
 
   const yAccessor = d => d.length;
   const yScale = d3
@@ -94,7 +112,10 @@ const Histogram = ({
           y={tooltip.y + dimensions.marginTop}
         >
           <div>
-            {xLabel}: {tooltip.data.x0}
+            {xLabel}: {tooltip.data.x0} to{" "}
+            {tooltip.data.x1 > bins[bins.length - 1].x1
+              ? d3.max(extraBarBin.map(d => xAccessor(d))) // extraBarBin.x1
+              : tooltip.data.x1}
           </div>
           <div>
             {yLabel}: {yAccessor(tooltip.data)}
@@ -125,9 +146,34 @@ const Histogram = ({
           widthAccessor={widthAccessorScaled}
           heightAccessor={heightAccessorScaled}
           setTooltip={setTooltip}
+          histogram={true}
           padding={0}
           fill={`url(#${gradientId})`}
         />
+        {extraBar && (
+          <Bars
+            data={[extraBarBin]}
+            keyAccessor={keyAccessor}
+            xAccessor={xAccessorScaled}
+            yAccessor={yAccessorScaled}
+            widthAccessor={widthAccessorScaled}
+            heightAccessor={heightAccessorScaled}
+            setTooltip={setTooltip}
+            histogram={true}
+            padding={0}
+            fill={`url(#${gradientId})`}
+          />
+        )}
+        {extraBar && (
+          <text
+            x={xScale(21)}
+            y={yScale(extraBar.length) - 5}
+            fill="#95a5a6"
+            style={{ textAnchor: "middle", fontSize: "0.8em" }}
+          >
+            Long Tail
+          </text>
+        )}
       </ChartContainer>
     </HistogramStyle>
   );

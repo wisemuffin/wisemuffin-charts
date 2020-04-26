@@ -11,6 +11,7 @@ import {
 import { ChartGeneralStyle } from "./ChartGeneralStyle";
 import ChartContainer from "./ChartContainer";
 import Tootltip from "./ChartElements/Tooltip";
+import LegendRange from "./ChartElements/LegendRange";
 
 const cellSize = 15;
 const yearHeight = cellSize * 7 + 25;
@@ -32,7 +33,12 @@ const HeatMap = ({
     marginBottom: 77
   });
   const [tooltip, setTooltip] = useState(false);
+  const [lowerRange, setLowerRange] = useState();
+  const [upperRange, setUpperRange] = useState();
+
   console.log("data in heat: ", data);
+
+  console.log("lowerRange: ", lowerRange);
 
   const colorInterp = d3
     .scaleLinear()
@@ -69,7 +75,10 @@ const HeatMap = ({
           <div>{JSON.stringify(tooltip.x)}</div>
         </Tootltip>
       )}
-      <ChartContainer dimensions={dimensions}>
+      <ChartContainer
+        //  dimensions={dimensions}
+        dimensions={{ ...dimensions, width: 1900 }}
+      >
         {data.map((year, i) => (
           <g
             key={year.key}
@@ -82,6 +91,7 @@ const HeatMap = ({
             </YearText>
             {d3.range(7).map(i => (
               <text
+                key={formatDay(i)}
                 x={-10}
                 y={(i + 0.5) * cellSize}
                 dy="0.31em"
@@ -99,6 +109,12 @@ const HeatMap = ({
                 x={timeWeek.count(d3.utcYear(d.date), d.date) * cellSize + 10}
                 y={countDay(d.date) * cellSize + 0.5}
                 fill={colorFn(d.value)}
+                opacity={
+                  lowerRange &&
+                  upperRange &&
+                  (d.value < lowerRange || d.value > upperRange) &&
+                  0
+                }
                 onMouseOver={() =>
                   setTooltip({
                     x:
@@ -118,6 +134,15 @@ const HeatMap = ({
             ))}
           </g>
         ))}
+        <LegendRange
+          style={{
+            transform: `translate(10px, ${data.length * yearHeight +
+              cellSize * 4}px)`
+          }}
+          maxValue={maxValue}
+          setLowerRange={setLowerRange}
+          setUpperRange={setUpperRange}
+        />
 
         {/* <defs>
               <Gradient id={gradientId} colors={gradientColors} x2="0" y2="100%" />
@@ -142,7 +167,8 @@ const HeatMap = ({
 };
 
 const HeatMapStyles = styled(ChartGeneralStyle)`
-  height: 500px;
+  height: 700px;
+  width: 1000px;
   flex: 1;
   min-width: 500px;
 

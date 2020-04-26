@@ -85,26 +85,46 @@ const App = () => {
     return filteredYears;
   };
 
+  let longTailBin = testData
+    .map(d => {
+      return {
+        date: d.date,
+        metricvalue: Math.floor(d.metricvalue / 24)
+      };
+    })
+    .filter(d => d.metricvalue > 7 * 4);
+  // longTailBin.x0 = 21;
+  // longTailBin.x1 = 22;
+
   return (
     <div className="App">
       <h1>Weather Dashboard</h1>
-      <ExampleComponent text="Create React Library Example 😄" />
+      <ExampleComponent text="Create React Library Example 🚀" />
+      <HeatMap
+        data={heatMapDataSetup()}
+        xAccessor={d => d.date}
+        yAccessor={d => d.value}
+        xLabel="date"
+        yLabel="value"
+      />
+      <div> long tail need 2 histograms</div>
       <div className="App__charts">
-        <HeatMap
-          data={heatMapDataSetup()}
-          xAccessor={d => d.date}
-          yAccessor={d => d.value}
-          xLabel="date"
-          yLabel="value"
-        />
         <Histogram
-          data={testData.filter(d => d.metricvalue)}
+          data={testData
+            .map(d => {
+              return {
+                date: d.date,
+                metricvalue: Math.floor(d.metricvalue / 24)
+              };
+            })
+            .filter(d => d.metricvalue <= 7 * 3)}
           xAccessor={d => d.metricvalue}
-          xLabel="Humidity"
-          xScaleType="log"
-          logBase={2}
-          numberOfThresholds={200}
+          xLabel="Age (days)"
+          yLabel="Count of Incidents Open"
+          numberOfThresholds={new Array(7 * 3).fill(0).map((arr, i) => i + 1)}
+          nice={false}
           lockBinsToTicks={false}
+          extraBar={longTailBin}
         />
 
         <Gauge label="myMetric" units={"cm"} />

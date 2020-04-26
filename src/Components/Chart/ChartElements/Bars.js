@@ -51,12 +51,12 @@ const Bars = ({
           width={d3.max([
             callAccessor(widthAccessor, d, i) -
               (scaleBandAxis === "y" ? 0 : padding),
-            0,
+            0
           ])}
           height={d3.max([
             callAccessor(heightAccessor, d, i) -
               (scaleBandAxis === "y" ? padding : 0),
-            0,
+            0
           ])}
           onMouseOver={() =>
             setTooltip({
@@ -64,7 +64,7 @@ const Bars = ({
                 (scaleBandAxis === "y" ? 0 : callAccessor(xAccessor, d, i)) +
                 callAccessor(widthAccessor, d, i) / 2,
               y: callAccessor(yAccessor, d, i),
-              data: d,
+              data: d
             })
           }
           onMouseOut={() => setTooltip(false)}
@@ -80,7 +80,7 @@ Bars.propTypes = {
   xAccessor: accessorPropsType,
   yAccessor: accessorPropsType,
   widthAccessor: accessorPropsType,
-  heightAccessor: accessorPropsType,
+  heightAccessor: accessorPropsType
 };
 
 Bars.defaultProps = { padding: 10 };
@@ -88,7 +88,7 @@ Bars.defaultProps = { padding: 10 };
 export default Bars;
 
 const Rect = styled.rect`
-  fill: ${(props) => props.fill};
+  fill: ${props => props.fill};
   transition: all 0.3s ease-out;
 
   &:hover {
