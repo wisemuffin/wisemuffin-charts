@@ -85,7 +85,7 @@ const App = () => {
     return filteredYears;
   };
 
-  let longTailBin = testData
+  let testDataLongTail = testData
     .map(d => {
       return {
         date: d.date,
@@ -93,8 +93,6 @@ const App = () => {
       };
     })
     .filter(d => d.metricvalue > 7 * 4);
-  // longTailBin.x0 = 21;
-  // longTailBin.x1 = 22;
 
   return (
     <div className="App">
@@ -104,11 +102,29 @@ const App = () => {
         data={heatMapDataSetup()}
         xAccessor={d => d.date}
         yAccessor={d => d.value}
+        xTickFormat={d3.timeFormat("%d/%m/%Y")}
         xLabel="date"
         yLabel="value"
       />
-      <div> long tail need 2 histograms</div>
       <div className="App__charts">
+        <BoxPlot
+          data={testData
+            .map(d => {
+              return {
+                date: d.date,
+                metricvalue: Math.floor(d.metricvalue / 24)
+              };
+            })
+            .filter(d => d.metricvalue <= 7 * 3)}
+          xAccessor={d => d.date}
+          yAccessor={d => d.metricvalue}
+          xScaleType="time"
+          xLabel="Date"
+          yLabel="Age (days)"
+          // rangeType="minMax"
+          xTickFormat={d3.timeFormat("%-b %-d")}
+          showOutliers={false}
+        />
         <Histogram
           data={testData
             .map(d => {
@@ -124,7 +140,7 @@ const App = () => {
           numberOfThresholds={new Array(7 * 3).fill(0).map((arr, i) => i + 1)}
           nice={false}
           lockBinsToTicks={false}
-          extraBar={longTailBin}
+          extraBar={testDataLongTail}
         />
 
         <Gauge label="myMetric" units={"cm"} />
@@ -139,6 +155,7 @@ const App = () => {
           }}
           xAccessor={dateAccessor}
           yAccessor={temperatureAccessor}
+          xTickFormat={d3.timeFormat("%-b %-d")}
           xLabel="Temperature"
         />
         <BoxPlot
@@ -159,6 +176,7 @@ const App = () => {
           xAccessor={scoreAccessor}
           yLabel="Player"
           xLabel="Score"
+          xTickFormat={d3.format(",")}
           scaleBandAxis="y"
           showLabel={false}
         />
@@ -176,6 +194,7 @@ const App = () => {
           }}
           xAccessor={dateAccessor}
           yAccessor={temperatureAccessor}
+          xTickFormat={d3.timeFormat("%-b %-d")}
           label="Temperature"
         />
         <ScatterPlot

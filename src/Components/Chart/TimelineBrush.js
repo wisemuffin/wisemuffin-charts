@@ -23,6 +23,8 @@ const TimelineBrush = ({
   data,
   xAccessor,
   yAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   showLabel,
@@ -147,10 +149,15 @@ const TimelineBrush = ({
           <Axis
             dimension="x"
             scale={xScale}
-            formatTick={formatDate}
+            formatTick={xTickFormat}
             label={showLabel && xLabel}
           />
-          <Axis dimension="y" scale={yScale} label={showLabel && yLabel} />
+          <Axis
+            dimension="y"
+            scale={yScale}
+            formatTick={yTickFormat}
+            label={showLabel && yLabel}
+          />
           {data &&
             data.series.map((series, i) => (
               <g key={i}>

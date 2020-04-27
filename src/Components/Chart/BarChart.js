@@ -22,6 +22,8 @@ const BarChart = ({
   data,
   xAccessor,
   yAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   showLabel,
@@ -107,14 +109,14 @@ const BarChart = ({
           dimension="x"
           scale={xScale}
           label={showLabel && xLabel}
-          formatTick={scaleBandAxis === "x" ? d => d : d3.format(",")}
+          formatTick={scaleBandAxis === "x" ? d => d : xTickFormat}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
           label={yLabel}
-          formatTick={scaleBandAxis === "x" ? d3.format(",") : d => d}
+          formatTick={scaleBandAxis === "x" ? xTickFormat : d => d}
         />
         <Bars
           data={data}

@@ -20,6 +20,8 @@ const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 const Histogram = ({
   data,
   xAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   xScaleType,
@@ -73,9 +75,6 @@ const Histogram = ({
 
   // extraBar
 
-  console.log("bin: ", bins[bins.length - 1].x0);
-  console.log("extraBar: ", extraBar);
-
   // add an extra bin if long tail
 
   let extraBarBin = [];
@@ -84,7 +83,6 @@ const Histogram = ({
     extraBarBin = [...extraBar];
     extraBarBin.x0 = bins[bins.length - 1].x1;
     extraBarBin.x1 = bins[bins.length - 1].x1 + widthExtraBar;
-    console.log("extraBarBin", extraBarBin);
   }
 
   const yAccessor = d => d.length;
@@ -129,12 +127,14 @@ const Histogram = ({
         <Axis
           dimensions={dimensions}
           dimension="x"
+          formatTick={xTickFormat}
           scale={xScale}
           label={xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
+          formatTick={yTickFormat}
           scale={yScale}
           label={yLabel}
         />
@@ -184,7 +184,7 @@ Histogram.propTypes = {
   yAccessor: accessorPropsType,
   xLabel: PropTypes.string,
   yLabel: PropTypes.string,
-  numberOfThresholds: PropTypes.number,
+  numberOfThresholds: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
   xScaleType: PropTypes.string,
   lockBinsToTicks: PropTypes.bool
 };

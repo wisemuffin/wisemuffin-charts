@@ -14,6 +14,8 @@ const ScatterPlot = ({
   data,
   xAccessor,
   yAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   showLabel
@@ -61,12 +63,14 @@ const ScatterPlot = ({
         <Axis
           dimensions={dimensions}
           dimension="x"
+          formatTick={xTickFormat}
           scale={xScale}
           label={showLabel && xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
+          formatTick={yTickFormat}
           scale={yScale}
           label={showLabel && yLabel}
         />

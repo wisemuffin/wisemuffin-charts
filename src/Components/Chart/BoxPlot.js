@@ -12,12 +12,25 @@ import Tootltip from "./ChartElements/Tooltip";
 import {
   useChartDimensions,
   accessorPropsType,
-  useUniqueId
+  useUniqueId,
+  scaleType
 } from "./ChartContainer/utils";
 
 const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
-const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
+const BoxPlot = ({
+  data,
+  xAccessor,
+  yAccessor,
+  xScaleType = "linear", // used for switching scale types along the x axis
+  xLabel,
+  yLabel,
+  xTickFormat,
+  yTickFormat,
+  showLabel,
+  rangeType = "iqr", // iqr (interquartile range) or minMax
+  showOutliers = true // boolean to show outliers above igr
+}) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
     marginBottom: 77
@@ -26,11 +39,9 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
 
   const numberOfThresholds = dimensions.boundedWidth / 40;
 
-  const xScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, xAccessor))
-    .range([0, dimensions.boundedWidth])
-    .nice(numberOfThresholds);
+  const xScale = scaleType(xScaleType, dimensions, data, xAccessor).nice(
+    numberOfThresholds
+  );
 
   const binsGenerator = d3
     .histogram()
@@ -39,7 +50,7 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
     .thresholds(xScale.ticks(numberOfThresholds));
 
   const bins = binsGenerator(data).map(bin => {
-    bin.sort((a, b) => a.temperature - b.temperature);
+    bin.sort((a, b) => yAccessor(a) - yAccessor(b));
     const values = bin.map(yAccessor);
     const min = values[0];
     const max = values[values.length - 1];
@@ -47,15 +58,15 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
     const q2 = d3.quantile(values, 0.5);
     const q3 = d3.quantile(values, 0.75);
     const iqr = q3 - q1; // interquartile range
-    const r0 = Math.max(min, q1 - iqr * 1.5);
-    const r1 = Math.min(max, q3 + iqr * 1.5);
+    const r0 = rangeType === "iqr" ? Math.max(min, q1 - iqr * 1.5) : min;
+    const r1 = rangeType === "iqr" ? Math.min(max, q3 + iqr * 1.5) : max;
     bin.quartiles = [q1, q2, q3];
     bin.range = [r0, r1];
-    bin.outliers = bin.filter(v => v.temperature < r0 || v.temperature > r1); // TODO
+    bin.outliers = showOutliers
+      ? bin.filter(v => yAccessor(v) < r0 || yAccessor(v) > r1)
+      : [];
     return bin;
   });
-
-  // console.log("bins in boxplot: ", bins);
 
   const yScale = d3
     .scaleLinear()
@@ -66,10 +77,16 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
   const xAccessorScaled = d =>
     xScale(xAccessor(d)) + dimensions.boundedWidth / numberOfThresholds / 2;
   const yAccessorScaled = d => yScale(yAccessor(d));
-  // const widthAccessorScaled = (d) => xScale(d.x1) - xScale(d.x0) - barPadding;
-  // const heightAccessorScaled = (d) =>
-  //   dimensions.boundedHeight - yScale(yAccessor(d));
   const keyAccessor = (d, i) => i;
+
+  console.log("check: ", xScaleType, dimensions, data, xAccessor);
+  console.log("xScale: ", xScale(1587564000000));
+  console.log("xScale: ", xScale(1587650400000));
+  console.log("xScale fn: ", xScale);
+  console.log("yScale 0: ", yScale(0));
+  console.log("yScale 10: ", yScale(10));
+  console.log("yScale 20: ", yScale(20));
+  console.log("bins: ", bins);
 
   return (
     <BoxPlotStyle ref={ref}>
@@ -89,7 +106,6 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
               </div>
             </div>
           )}
-          {/* <div>all data: {JSON.stringify(tooltip.data)}</div> */}
           {tooltip.data.quartiles && (
             <div>
               <div>iqr 1: {tooltip.data.quartiles[0]}</div>
@@ -107,12 +123,14 @@ const BoxPlot = ({ data, xAccessor, yAccessor, xLabel, yLabel, showLabel }) => {
           dimensions={dimensions}
           dimension="x"
           scale={xScale}
+          formatTick={xTickFormat}
           label={showLabel && xLabel}
         />
         <Axis
           dimensions={dimensions}
           dimension="y"
           scale={yScale}
+          formatTick={yTickFormat}
           label={showLabel && yLabel}
         />
 

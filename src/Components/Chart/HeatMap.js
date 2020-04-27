@@ -25,6 +25,8 @@ const HeatMap = ({
   data,
   xAccessor,
   yAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   colorRange = ["rgba(152, 128, 250, 0.1)", "rgba(152, 128, 250, 0.9)"]
@@ -35,10 +37,6 @@ const HeatMap = ({
   const [tooltip, setTooltip] = useState(false);
   const [lowerRange, setLowerRange] = useState();
   const [upperRange, setUpperRange] = useState();
-
-  console.log("data in heat: ", data);
-
-  console.log("lowerRange: ", lowerRange);
 
   const colorInterp = d3
     .scaleLinear()
@@ -64,7 +62,7 @@ const HeatMap = ({
           y={tooltip.y + dimensions.marginTop}
         >
           <div>
-            {xLabel}: {d3.timeFormat("%d/%m/%Y")(xAccessor(tooltip.data))}
+            {xLabel}: {xTickFormat(xAccessor(tooltip.data))}
           </div>
           <div>
             {"dow"}: {d3.timeFormat("%a")(xAccessor(tooltip.data))}
@@ -75,10 +73,7 @@ const HeatMap = ({
           <div>{JSON.stringify(tooltip.x)}</div>
         </Tootltip>
       )}
-      <ChartContainer
-        //  dimensions={dimensions}
-        dimensions={{ ...dimensions, width: 1900 }}
-      >
+      <ChartContainer dimensions={{ ...dimensions, width: 1900 }}>
         {data.map((year, i) => (
           <g
             key={year.key}
@@ -143,24 +138,6 @@ const HeatMap = ({
           setLowerRange={setLowerRange}
           setUpperRange={setUpperRange}
         />
-
-        {/* <defs>
-              <Gradient id={gradientId} colors={gradientColors} x2="0" y2="100%" />
-            </defs>
-            <Axis
-              dimensions={dimensions}
-              dimension="x"
-              scale={xScale}
-              label={showLabel && xLabel}
-              formatTick={scaleBandAxis === "x" ? d => d : d3.format(",")}
-            />
-            <Axis
-              dimensions={dimensions}
-              dimension="y"
-              scale={yScale}
-              label={showLabel && yLabel}
-              formatTick={scaleBandAxis === "x" ? d3.format(",") : d => d}
-            /> */}
       </ChartContainer>
     </HeatMapStyles>
   );

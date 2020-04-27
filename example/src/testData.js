@@ -7246,5 +7246,10 @@ export const testData = [
   { date: 1587564000000, metricvalue: 37, __typename: "MetricByDate" },
   { date: 1587564000000, metricvalue: 11, __typename: "MetricByDate" },
   { date: 1587564000000, metricvalue: 347, __typename: "MetricByDate" },
-  { date: 1587564000000, metricvalue: 85, __typename: "MetricByDate" }
+  { date: 1587564000000, metricvalue: 85, __typename: "MetricByDate" },
+  { date: 1587650400000, metricvalue: 0, __typename: "MetricByDate" },
+  { date: 1587650400000, metricvalue: 30, __typename: "MetricByDate" },
+  { date: 1587650400000, metricvalue: 50, __typename: "MetricByDate" },
+  { date: 1587650400000, metricvalue: 48, __typename: "MetricByDate" },
+  { date: 1587650400000, metricvalue: 300, __typename: "MetricByDate" }
 ];

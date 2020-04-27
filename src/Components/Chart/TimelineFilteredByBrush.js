@@ -19,13 +19,14 @@ import {
   useUniqueId
 } from "./ChartContainer/utils";
 
-const formatDate = d3.timeFormat("%-b %-d");
 const gradientColors = ["#9980fa", "rgb(226, 222, 243)"];
 
 const TimelineFilteredByBrush = ({
   data,
   xAccessor,
   yAccessor,
+  xTickFormat,
+  yTickFormat,
   xLabel,
   yLabel,
   showLabel
@@ -92,10 +93,15 @@ const TimelineFilteredByBrush = ({
           <Axis
             dimension="x"
             scale={xScale}
-            formatTick={formatDate}
+            formatTick={xTickFormat}
             label={showLabel && xLabel}
           />
-          <Axis dimension="y" scale={yScale} label={showLabel && yLabel} />
+          <Axis
+            dimension="y"
+            scale={yScale}
+            formatTick={yTickFormat}
+            label={showLabel && yLabel}
+          />
           {filteredData &&
             filteredData.series.map((series, i) => (
               <g key={i}>
