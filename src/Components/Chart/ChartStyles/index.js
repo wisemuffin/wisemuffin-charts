@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { animated, useSpring } from "react-spring";
 
-export const MetricValue = styled.div`
+export const MetricValue = styled(animated.div)`
   margin-top: 0.4em;
   font-size: 3em;
   line-height: 1em;

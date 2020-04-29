@@ -30,7 +30,8 @@
     "d3": "^5.9.1",
     "prop-types": "^15.7.2",
     "react-svg-brush": "^1.0.0",
-    "styled-components": "^5.0.1"
+    "styled-components": "^5.0.1",
+    "react-spring": "^8.0.27"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.8",
