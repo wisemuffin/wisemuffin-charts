@@ -28,6 +28,8 @@ export { default as Gauge } from "./Components/Chart/Gauge";
 
 export { default as HeatMap } from "./Components/Chart/HeatMap";
 
+export { default as DoughnutProgress } from "./Components/Chart/DoughnutProgress";
+
 export {
   getTimelineData,
   getScatterData,

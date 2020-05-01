@@ -14,7 +14,8 @@ import {
   TimelineFilteredByBrush,
   SankeyAnimated,
   Gauge,
-  HeatMap
+  HeatMap,
+  DoughnutProgress
 } from "wisemuffin-charts";
 
 import {
@@ -107,6 +108,7 @@ const App = () => {
         yLabel="value"
       />
       <div className="App__charts">
+        <DoughnutProgress percent={0.88} height="400px" />
         <BoxPlot
           data={testData
             .map(d => {

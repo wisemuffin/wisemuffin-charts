@@ -9,6 +9,14 @@ export const MetricValue = styled(animated.div)`
   font-feature-settings: "zero", "tnum" 1;
 `;
 
+export const MetricValueSvg = styled(animated.text)`
+  margin-top: 0.4em;
+  font-size: 3em;
+  line-height: 1em;
+  font-weight: 900;
+  font-feature-settings: "zero", "tnum" 1;
+`;
+
 export const MetricLabel = styled.div`
   color: #8b8ba7;
   margin-top: 0.6em;
