@@ -17,7 +17,7 @@ import {
   sentenceCase
 } from "../../utils";
 
-const SankeyAnimated = ({ data: dataset }) => {
+const SankeyAnimated = ({ data: dataset, height = "600px" }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
     marginBottom: 77
@@ -413,7 +413,7 @@ const SankeyAnimated = ({ data: dataset }) => {
   };
 
   return (
-    <SankeyStyles ref={ref}>
+    <SankeyStyles ref={ref} height={height}>
       <ChartContainer dimensions={dimensions}>
         <g className="linksGroup">
           {linkOptions.map((d, i) => (
@@ -457,7 +457,7 @@ const SankeyAnimated = ({ data: dataset }) => {
 //   };
 
 const SankeyStyles = styled(ChartGeneralStyle)`
-  height: 500px;
+  height: ${props => props.height};
   flex: 1;
   min-width: 500px;
 

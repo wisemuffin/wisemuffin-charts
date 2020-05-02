@@ -18,7 +18,8 @@ const ScatterPlot = ({
   yTickFormat,
   xLabel,
   yLabel,
-  showLabel
+  showLabel,
+  height = "300px"
 }) => {
   const [ref, dimensions] = useChartDimensions({
     marginBottom: 77
@@ -42,7 +43,7 @@ const ScatterPlot = ({
   const keyAccessor = (d, i) => i;
 
   return (
-    <ScatterPlotStyle ref={ref}>
+    <ScatterPlotStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -102,8 +103,7 @@ ScatterPlot.defaultProps = {
 };
 
 const ScatterPlotStyle = styled(ChartGeneralStyle)`
-  height: 500px;
-  width: 500px;
+  height: ${props => props.height};
   position: relative;
 `;
 export default ScatterPlot;

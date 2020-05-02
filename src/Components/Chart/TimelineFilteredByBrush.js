@@ -29,7 +29,8 @@ const TimelineFilteredByBrush = ({
   yTickFormat,
   xLabel,
   yLabel,
-  showLabel
+  showLabel,
+  height = "350px"
 }) => {
   const [tooltip, setTooltip] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
@@ -66,7 +67,7 @@ const TimelineFilteredByBrush = ({
 
   return (
     <div>
-      <TimelineFilteredByBrushStyle ref={ref}>
+      <TimelineFilteredByBrushStyle ref={ref} height={height}>
         {tooltip && (
           <Tootltip
             tooltipEvent={tooltip}
@@ -163,9 +164,8 @@ TimelineFilteredByBrush.defaultProps = {
 };
 
 const TimelineFilteredByBrushStyle = styled(ChartGeneralStyle)`
-  min-width: 500px;
   position: relative;
-  height: 350px;
+  height: ${props => props.height};
   flex: 1;
 `;
 

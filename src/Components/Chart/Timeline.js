@@ -26,7 +26,8 @@ const Timeline = ({
   yTickFormat,
   xLabel,
   yLabel,
-  showLabel
+  showLabel,
+  height = "300px"
 }) => {
   const [tooltip, setTooltip] = useState(false);
   const [ref, dimensions] = useChartDimensions();
@@ -62,7 +63,7 @@ const Timeline = ({
   const keyAccessor = (d, i) => i;
 
   return (
-    <TimelineStyle ref={ref}>
+    <TimelineStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -141,9 +142,8 @@ Timeline.defaultProps = {
 };
 
 const TimelineStyle = styled(ChartGeneralStyle)`
-  height: 300px;
+  height: ${props => props.height};
   min-width: 500px;
-  width: calc(100% + 1em);
   position: relative;
 `;
 

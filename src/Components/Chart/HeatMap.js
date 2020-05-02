@@ -29,7 +29,8 @@ const HeatMap = ({
   yTickFormat,
   xLabel,
   yLabel,
-  colorRange = ["rgba(152, 128, 250, 0.1)", "rgba(152, 128, 250, 0.9)"]
+  colorRange = ["rgba(152, 128, 250, 0.1)", "rgba(152, 128, 250, 0.9)"],
+  height = "700px"
 }) => {
   const [ref, dimensions] = useChartDimensions({
     marginBottom: 77
@@ -54,7 +55,7 @@ const HeatMap = ({
     .scaleSequential(colorInterp)
     .domain([Math.floor(minValue), Math.ceil(maxValue)]);
   return (
-    <HeatMapStyles ref={ref}>
+    <HeatMapStyles ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -144,7 +145,7 @@ const HeatMap = ({
 };
 
 const HeatMapStyles = styled(ChartGeneralStyle)`
-  height: 700px;
+  height: ${props => props.height};
   width: 1000px;
   flex: 1;
   min-width: 500px;

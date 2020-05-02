@@ -29,7 +29,8 @@ const BoxPlot = ({
   yTickFormat,
   showLabel,
   rangeType = "iqr", // iqr (interquartile range) or minMax
-  showOutliers = true // boolean to show outliers above igr
+  showOutliers = true, // boolean to show outliers above igr
+  height = "300px"
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -89,7 +90,7 @@ const BoxPlot = ({
   console.log("bins: ", bins);
 
   return (
-    <BoxPlotStyle ref={ref}>
+    <BoxPlotStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -203,7 +204,7 @@ BoxPlot.defaultProps = {
 };
 
 const BoxPlotStyle = styled(ChartGeneralStyle)`
-  height: 500px;
+  height: ${props => props.height};
   flex: 1;
   min-width: 500px;
   position: relative;

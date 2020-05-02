@@ -27,7 +27,8 @@ const BarChart = ({
   xLabel,
   yLabel,
   showLabel,
-  scaleBandAxis
+  scaleBandAxis,
+  height = "300px"
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -85,7 +86,7 @@ const BarChart = ({
   const keyAccessor = (d, i) => i;
 
   return (
-    <BarChartStyle ref={ref}>
+    <BarChartStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -152,10 +153,9 @@ BarChart.defaultProps = {
 };
 
 const BarChartStyle = styled(ChartGeneralStyle)`
-  height: 500px;
   flex: 1;
   min-width: 500px;
-
+  height: ${props => props.height};
   position: relative;
 `;
 

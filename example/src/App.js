@@ -99,13 +99,13 @@ const App = () => {
   return (
     <div style={{ flexGrow: 1, backgroundColor: "#d5d7d8", padding: "2rem" }}>
       <Grid spacing={3} container>
-        <Grid item xl={3} sm={6}>
-          <DoughnutProgress percent={0.88} />
+        <Grid item md={3} sm={6}>
+          <DoughnutProgress percent={0.88} height={"200px"} />
         </Grid>
-        <Grid item xl={3} sm={6}>
+        <Grid item md={3} sm={6}>
           <Gauge label="myMetric" units={"cm"} />
         </Grid>
-        <Grid item xl={3} sm={6}>
+        <Grid item md={3} sm={6}>
           <Gauge label="myMetric" value={90} units={"%"} max={100} />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>

@@ -84,7 +84,7 @@ const DoughnutProgress = ({
 
   return (
     <DoughnutProgressStyle height={height} ref={ref}>
-      <ChartContainer dimensions={dimensions}>
+      <ChartContainer dimensions={{ ...dimensions, marginTop: 50 }}>
         <defs>
           <linearGradient
             id="Gauge__gradient"
@@ -120,7 +120,7 @@ const DoughnutProgress = ({
               fontSize: `${d3.min([
                 dimensions.boundedWidth,
                 dimensions.height
-              ]) * 0.25}px`,
+              ]) * 0.2}px`,
               textAnchor: "middle"
             }}
             // y={y}

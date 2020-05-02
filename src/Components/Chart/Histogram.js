@@ -201,7 +201,7 @@ Histogram.defaultProps = {
 const HistogramStyle = styled(ChartGeneralStyle)`
   height: 500px;
   flex: 1;
-  min-width: 500px;
+  min-width: 100px;
   position: relative;
 `;
 

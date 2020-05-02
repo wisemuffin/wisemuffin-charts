@@ -28,7 +28,8 @@ const TimelineBrush = ({
   xLabel,
   yLabel,
   showLabel,
-  setFilteredData
+  setFilteredData,
+  height = "300px"
 }) => {
   const [ref, dimensions] = useChartDimensions();
 
@@ -136,7 +137,7 @@ const TimelineBrush = ({
     <div>
       <p>left click and swipe over a region to drill down the chart above</p>
 
-      <TimelineBrushStyle ref={ref}>
+      <TimelineBrushStyle ref={ref} height={height}>
         <ChartContainer dimensions={dimensions}>
           <defs>
             <Gradient
@@ -251,7 +252,7 @@ TimelineBrush.defaultProps = {
 };
 
 const TimelineBrushStyle = styled(ChartGeneralStyle)`
-  min-width: 500px;
+  height: ${props => props.height};
   position: relative;
   height: 200px;
   flex: 1;

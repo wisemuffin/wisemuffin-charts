@@ -11,15 +11,22 @@ import Tootltip from "./ChartElements/Tooltip";
 import {
   useChartDimensions,
   accessorPropsType,
-  useUniqueId,
+  useUniqueId
 } from "./ChartContainer/utils";
 
 const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
-const Pie = ({ data, categoryAccessor, valueAccessor, label, margin }) => {
+const Pie = ({
+  data,
+  categoryAccessor,
+  valueAccessor,
+  label,
+  margin,
+  height = "300px"
+}) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77,
+    marginBottom: 77
   });
   const [tooltip, setTooltip] = useState(false);
 
@@ -36,12 +43,18 @@ const Pie = ({ data, categoryAccessor, valueAccessor, label, margin }) => {
   var y =
     (dimensions.height - dimensions.marginTop - dimensions.marginBottom) / 2;
 
-  var pie = d3.pie().value(valueAccessor).sort(null);
+  var pie = d3
+    .pie()
+    .value(valueAccessor)
+    .sort(null);
 
-  var arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+  var arc = d3
+    .arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
 
   return (
-    <PieStyle ref={ref}>
+    <PieStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -67,7 +80,7 @@ const Pie = ({ data, categoryAccessor, valueAccessor, label, margin }) => {
                   x: arc.centroid(arcData)[0] + x,
                   y: arc.centroid(arcData)[1] + y,
                   value: valueAccessor(arcData.data),
-                  label: categoryAccessor(arcData.data),
+                  label: categoryAccessor(arcData.data)
                 })
               }
               onMouseOut={() => setTooltip(false)}
@@ -83,19 +96,17 @@ Pie.propTypes = {
   categoryAccessor: accessorPropsType,
   valueAccessor: accessorPropsType,
   xLabel: PropTypes.string,
-  yLabel: PropTypes.string,
+  yLabel: PropTypes.string
 };
 
 Pie.defaultProps = {
-  categoryAccessor: (d) => d.x,
-  valueAccessor: (d) => d.y,
+  categoryAccessor: d => d.x,
+  valueAccessor: d => d.y
 };
 
 const PieStyle = styled(ChartGeneralStyle)`
-  height: 500px;
+  height: ${props => props.height};
   flex: 1;
-  min-width: 300px;
-
   position: relative;
 `;
 
