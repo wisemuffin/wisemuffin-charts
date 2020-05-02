@@ -5,7 +5,7 @@ import { dimensionsPropsType } from "./utils";
 const ChartContext = createContext();
 export const useChartDimensions = () => useContext(ChartContext);
 
-const Chart = ({ dimensions, children }) => {
+const ChartContainer = ({ dimensions, children }) => {
   return (
     <ChartContainerStyle width={dimensions.width} height={dimensions.height}>
       <ChartContext.Provider value={dimensions}>
@@ -20,11 +20,11 @@ const Chart = ({ dimensions, children }) => {
   );
 };
 
-Chart.propTypes = {
+ChartContainer.propTypes = {
   dimensions: dimensionsPropsType
 };
 
-Chart.defaultProps = {
+ChartContainer.defaultProps = {
   dimensions: {}
 };
 
@@ -32,4 +32,4 @@ const ChartContainerStyle = styled.svg`
   overflow: visible;
 `;
 
-export default Chart;
+export default ChartContainer;

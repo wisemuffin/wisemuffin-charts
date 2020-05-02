@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* placeholders */
+.placeholder {
+  background: #ecf0f1;
+}
+
+.App__charts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1.6em 2em 4em;
+}

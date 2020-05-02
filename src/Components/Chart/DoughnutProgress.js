@@ -21,7 +21,7 @@ const DoughnutProgress = ({
   backgroundCircleFill = "#dbdbe7",
   gradientRange = [backgroundCircleFill, "#4834d4"],
   animationDuration = 1500,
-  height = "300px"
+  height = "200px"
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -124,7 +124,7 @@ const DoughnutProgress = ({
               textAnchor: "middle"
             }}
             // y={y}
-            dominant-baseline="middle"
+            dominantBaseline="middle"
           >
             {useSpring({
               number: percent,
@@ -146,8 +146,8 @@ DoughnutProgress.defaultProps = {};
 const DoughnutProgressStyle = styled(ChartGeneralStyle)`
   flex: 1;
   height: ${props => props.height};
-  min-width: 300px;
-  min-height: 300px;
+  min-width: 100px;
+  min-height: 100px;
   position: relative;
 `;
 
