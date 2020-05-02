@@ -25,9 +25,9 @@ const SankeyAnimated = ({
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
     marginTop: 40,
-    marginRight: 30,
-    marginBottom: showLabel ? 75 : 40,
-    marginLeft: showLabel ? 75 : 40
+    marginRight: showLabel ? 175 : 30,
+    marginBottom: 40,
+    marginLeft: showLabel ? 100 : 30
   });
   // const ref = useRef();
 
@@ -170,6 +170,8 @@ const SankeyAnimated = ({
       .append("text")
       .attr("class", "label start-label")
       .attr("y", (d, i) => startYScale(i))
+      .style("text-anchor", "end")
+      .style("dominant-baseline", "middle")
       .text((d, i) => sentenceCase(sesNames[i]));
 
     const startLabel = startingLabelsGroup
@@ -248,7 +250,8 @@ const SankeyAnimated = ({
       .append("text")
       .attr("class", "legend-text-left")
       .text("Female")
-      .attr("x", -20);
+      .attr("x", -20)
+      .style("text-anchor", "end");
     femaleLegend
       .append("line")
       .attr("class", "legend-line")
