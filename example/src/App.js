@@ -99,13 +99,13 @@ const App = () => {
   return (
     <div style={{ flexGrow: 1, backgroundColor: "#d5d7d8", padding: "2rem" }}>
       <Grid spacing={3} container>
-        <Grid item md={3} sm={6}>
+        <Grid item md={3} sm={4}>
           <DoughnutProgress percent={0.88} height={"200px"} />
         </Grid>
-        <Grid item md={3} sm={6}>
+        <Grid item md={3} sm={4}>
           <Gauge label="myMetric" units={"cm"} />
         </Grid>
-        <Grid item md={3} sm={6}>
+        <Grid item md={3} sm={4}>
           <Gauge label="myMetric" value={90} units={"%"} max={100} />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>
@@ -173,6 +173,7 @@ const App = () => {
             yAccessor={temperatureAccessor}
             xTickFormat={d3.timeFormat("%-b %-d")}
             xLabel="Temperature"
+            showLabel={false}
           />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>
@@ -221,7 +222,9 @@ const App = () => {
             xAccessor={dateAccessor}
             yAccessor={temperatureAccessor}
             xTickFormat={d3.timeFormat("%-b %-d")}
-            label="Temperature"
+            xLabel="Date"
+            yLabel="Temperature"
+            // showLabel={false}
           />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>
@@ -244,126 +247,6 @@ const App = () => {
           />
         </Grid>
       </Grid>
-      {/* <div className="App">
-        <h1>Weather Dashboard</h1>
-        <ExampleComponent text="Create React Library Example 🚀" />
-        <HeatMap
-          data={heatMapDataSetup()}
-          xAccessor={d => d.date}
-          yAccessor={d => d.value}
-          xTickFormat={d3.timeFormat("%d/%m/%Y")}
-          xLabel="date"
-          yLabel="value"
-        />
-        <div className="App__charts">
-          <DoughnutProgress percent={0.88} height="400px" />
-          <BoxPlot
-            data={testData
-              .map(d => {
-                return {
-                  date: d.date,
-                  metricvalue: Math.floor(d.metricvalue / 24)
-                };
-              })
-              .filter(d => d.metricvalue <= 7 * 3)}
-            xAccessor={d => d.date}
-            yAccessor={d => d.metricvalue}
-            xScaleType="time"
-            xLabel="Date"
-            yLabel="Age (days)"
-            // rangeType="minMax"
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            showOutliers={false}
-          />
-          <Histogram
-            data={testData
-              .map(d => {
-                return {
-                  date: d.date,
-                  metricvalue: Math.floor(d.metricvalue / 24)
-                };
-              })
-              .filter(d => d.metricvalue <= 7 * 3)}
-            xAccessor={d => d.metricvalue}
-            xLabel="Age (days)"
-            yLabel="Count of Incidents Open"
-            numberOfThresholds={new Array(7 * 3).fill(0).map((arr, i) => i + 1)}
-            nice={false}
-            lockBinsToTicks={false}
-            extraBar={testDataLongTail}
-          />
-
-          <Gauge label="myMetric" units={"cm"} />
-          <Gauge label="myMetric" value={90} units={"%"} max={100} />
-
-          <SankeyAnimated data={educationSankey} />
-
-          <TimelineFilteredByBrush
-            data={{
-              series: [data.timeline, data.timeline2],
-              dates: data.timeline.map(dateAccessor)
-            }}
-            xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            xLabel="Temperature"
-          />
-          <BoxPlot
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            yAccessor={temperatureAccessor}
-            xLabel="Humidity"
-            yLabel="temp"
-          />
-          <Pie
-            data={data.categorical}
-            categoryAccessor={playerAccessor}
-            valueAccessor={scoreAccessor}
-          />
-          <BarChart
-            data={data.categorical}
-            yAccessor={playerAccessor}
-            xAccessor={scoreAccessor}
-            yLabel="Player"
-            xLabel="Score"
-            xTickFormat={d3.format(",")}
-            scaleBandAxis="y"
-            showLabel={false}
-          />
-          <BarChart
-            data={data.categorical}
-            xAccessor={playerAccessor}
-            yAccessor={scoreAccessor}
-            xLabel="Player"
-            yLabel="Score"
-          />
-          <Timeline
-            data={{
-              series: [data.timeline, data.timeline2],
-              dates: data.timeline.map(dateAccessor)
-            }}
-            xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            label="Temperature"
-          />
-          <ScatterPlot
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            yAccessor={temperatureAccessor}
-            xLabel="Humidity"
-            yLabel="Temperature"
-          />
-          <Histogram
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            xLabel="Humidity"
-            xScaleType="log"
-            numberOfThresholds={20}
-            lockBinsToTicks={false}
-          />
-        </div>
-      </div> */}
     </div>
   );
 };

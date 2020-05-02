@@ -31,7 +31,12 @@ const TimelineBrush = ({
   setFilteredData,
   height = "300px"
 }) => {
-  const [ref, dimensions] = useChartDimensions();
+  const [ref, dimensions] = useChartDimensions({
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
+  });
 
   const [brushSelectionFilter, setBrushSelectionFilter] = useState();
   const [brushSelection, setBrushSelection] = useState();

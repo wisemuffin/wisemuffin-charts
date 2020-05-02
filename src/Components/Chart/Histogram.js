@@ -19,11 +19,13 @@ const gradientColors = ["#9980FA", "rgb(226, 222, 243)"];
 
 const Histogram = ({
   data,
+  height = "300px",
   xAccessor,
   xTickFormat,
   yTickFormat,
   xLabel,
   yLabel,
+  showLabel = true,
   xScaleType,
   numberOfThresholds,
   lockBinsToTicks,
@@ -34,7 +36,10 @@ const Histogram = ({
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
   });
   const [tooltip, setTooltip] = useState(false);
 
@@ -102,7 +107,7 @@ const Histogram = ({
   const keyAccessor = (d, i) => i;
 
   return (
-    <HistogramStyle ref={ref}>
+    <HistogramStyle ref={ref} height={height}>
       {tooltip && (
         <Tootltip
           tooltipEvent={tooltip}
@@ -199,7 +204,7 @@ Histogram.defaultProps = {
 };
 
 const HistogramStyle = styled(ChartGeneralStyle)`
-  height: 500px;
+  height: ${props => props.height};
   flex: 1;
   min-width: 100px;
   position: relative;

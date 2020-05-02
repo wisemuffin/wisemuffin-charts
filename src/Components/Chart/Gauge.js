@@ -143,8 +143,6 @@ const GaugeStyle = styled(ChartGeneralStyle)`
   text-align: center;
   flex: 1;
   position: relative;
-  max-width: 12em;
-  min-width: 12em;
   padding: 2em;
 `;
 

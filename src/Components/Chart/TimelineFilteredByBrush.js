@@ -34,7 +34,12 @@ const TimelineFilteredByBrush = ({
 }) => {
   const [tooltip, setTooltip] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
-  const [ref, dimensions] = useChartDimensions();
+  const [ref, dimensions] = useChartDimensions({
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
+  });
   const gradientId = useUniqueId("TimelineFilteredByBrush-gradient");
   const xScale = d3
     .scaleTime()
@@ -144,6 +149,7 @@ const TimelineFilteredByBrush = ({
         yAccessor={yAccessor}
         xLabel={xLabel}
         setFilteredData={setFilteredData}
+        showLabel={showLabel}
       />
     </div>
   );

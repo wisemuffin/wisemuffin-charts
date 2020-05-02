@@ -22,7 +22,10 @@ const ScatterPlot = ({
   height = "300px"
 }) => {
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
   });
   const [tooltip, setTooltip] = useState(false);
 

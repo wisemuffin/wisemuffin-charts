@@ -25,9 +25,14 @@ const DoughnutProgress = ({
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 5,
+    marginRight: 5
   });
   const [tooltip, setTooltip] = useState(false);
+
+  console.log("gauge dims: ", dimensions);
 
   // set up animation
   const animationConfig = {
@@ -43,13 +48,10 @@ const DoughnutProgress = ({
 
   var outerRadius = (d3.min([dimensions.width, dimensions.height]) * 2) / 5;
   var innerRadius =
-    (d3.min([dimensions.width, dimensions.height]) * 2) / 5 - 30;
+    ((d3.min([dimensions.width, dimensions.height]) * 2) / 5) * 0.8;
 
-  var x =
-    (dimensions.boundedWidth - dimensions.marginLeft + dimensions.marginRight) /
-    2;
-  var y =
-    (dimensions.height - dimensions.marginTop - dimensions.marginBottom) / 2;
+  var x = dimensions.boundedWidth / 2;
+  var y = dimensions.boundedHeight / 2;
 
   const angleScale = d3
     .scaleLinear()
@@ -84,7 +86,7 @@ const DoughnutProgress = ({
 
   return (
     <DoughnutProgressStyle height={height} ref={ref}>
-      <ChartContainer dimensions={{ ...dimensions, marginTop: 50 }}>
+      <ChartContainer dimensions={dimensions}>
         <defs>
           <linearGradient
             id="Gauge__gradient"
@@ -120,7 +122,7 @@ const DoughnutProgress = ({
               fontSize: `${d3.min([
                 dimensions.boundedWidth,
                 dimensions.height
-              ]) * 0.2}px`,
+              ]) * 0.25}px`,
               textAnchor: "middle"
             }}
             // y={y}
@@ -146,8 +148,6 @@ DoughnutProgress.defaultProps = {};
 const DoughnutProgressStyle = styled(ChartGeneralStyle)`
   flex: 1;
   height: ${props => props.height};
-  min-width: 100px;
-  min-height: 100px;
   position: relative;
 `;
 

@@ -17,10 +17,17 @@ import {
   sentenceCase
 } from "../../utils";
 
-const SankeyAnimated = ({ data: dataset, height = "600px" }) => {
+const SankeyAnimated = ({
+  data: dataset,
+  height = "600px",
+  showLabel = true
+}) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
-    marginBottom: 77
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
   });
   // const ref = useRef();
 

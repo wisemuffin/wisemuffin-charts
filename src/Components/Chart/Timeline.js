@@ -30,7 +30,12 @@ const Timeline = ({
   height = "300px"
 }) => {
   const [tooltip, setTooltip] = useState(false);
-  const [ref, dimensions] = useChartDimensions();
+  const [ref, dimensions] = useChartDimensions({
+    marginTop: 40,
+    marginRight: 30,
+    marginBottom: showLabel ? 75 : 40,
+    marginLeft: showLabel ? 75 : 40
+  });
   const gradientId = useUniqueId("Timeline-gradient");
 
   const xScale = d3
