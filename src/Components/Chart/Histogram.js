@@ -37,7 +37,7 @@ const Histogram = ({
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
     marginTop: 40,
-    marginRight: 30,
+    marginRight: extraBar ? 50 : 30,
     marginBottom: showLabel ? 75 : 40,
     marginLeft: showLabel ? 75 : 40
   });
