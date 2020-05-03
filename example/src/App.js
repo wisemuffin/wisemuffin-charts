@@ -59,6 +59,8 @@ const App = () => {
   const dave = wide_data => {
     var long_data = [];
     wide_data.forEach(function(row) {
+      var metrics = {};
+
       // Loop through all of the columns, and for each column
       // make a new row
       Object.keys(row).forEach(function(colname) {
@@ -66,12 +68,13 @@ const App = () => {
         if (colname == "sex" || colname == "ses") {
           return;
         }
-        long_data.push({
-          sex: row["sex"],
-          ses: row["ses"],
-          percent: row[colname],
-          education: colname
-        });
+        metrics[colname] = row[colname];
+      });
+
+      long_data.push({
+        sex: row["sex"],
+        ses: row["ses"],
+        education: metrics
       });
     });
     return long_data;

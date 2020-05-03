@@ -21,9 +21,9 @@ const SankeyAnimated = ({
   data: dataset,
   height = "600px",
   showLabel = true,
-  categoryAccessor = d => d.sex,
-  leftAccessor = d => d.ses,
-  rightAccessor = d => d.education
+  categoryDimAccessor = d => d.sex,
+  leftDimAccessor = d => d.ses,
+  rightDimAccessor = d => d.education
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -46,33 +46,27 @@ const SankeyAnimated = ({
   }, [dimensions, dataset]);
 
   // prep
+  const leftDim = d3.map(dataset, leftDimAccessor).keys();
+  const leftDimIds = d3.range(leftDim.length);
 
-  const sexes = d3.map(dataset, categoryAccessor).keys();
-  const sexIds = d3.range(sexes.length);
+  const categoryDim = d3.map(dataset, categoryDimAccessor).keys();
+  const categoryDimIds = d3.range(categoryDim.length);
 
-  const educationNames = [
-    "<High School",
-    "High School",
-    "Some Post-secondary",
-    "Post-secondary",
-    "Associate's",
-    "Bachelor's and up"
-  ];
+  // TODO currently assumes first row has all right dimensions
+  const rightDim = Object.keys(rightDimAccessor(dataset[0]));
+  const rightDimIds = d3.range(rightDim.length);
+  console.log("rightDim: ", JSON.stringify(rightDim));
 
-  const educationIds = d3.range(educationNames.length);
-
-  const sesNames = d3.map(dataset, leftAccessor).keys();
-  const sesIds = d3.range(sesNames.length);
-
-  const getStatusKey = ({ sex, ses }) => [sex, ses].join("--");
+  const getStatusKey = ({ categoryDim, leftDim }) =>
+    [categoryDim, leftDim].join("--");
 
   const stackedProbabilities = {};
   dataset.forEach(startingPoint => {
     const key = getStatusKey(startingPoint);
     let stackedProbability = 0;
-    stackedProbabilities[key] = educationNames.map((education, i) => {
-      stackedProbability += startingPoint[education] / 100;
-      if (i == educationNames.length - 1) {
+    stackedProbabilities[key] = rightDim.map((education, i) => {
+      stackedProbability += rightDimAccessor(startingPoint)[education] / 100;
+      if (i == rightDim.length - 1) {
         // account for rounding error
         return 1;
       } else {
@@ -85,11 +79,11 @@ const SankeyAnimated = ({
   function generatePerson(elapsed) {
     currentPersonId++;
 
-    const sex = getRandomValue(sexIds);
-    const ses = getRandomValue(sesIds);
+    const sex = getRandomValue(categoryDimIds);
+    const ses = getRandomValue(leftDimIds);
     const statusKey = getStatusKey({
-      sex: sexes[sex],
-      ses: sesNames[ses]
+      sex: categoryDim[sex],
+      ses: leftDim[ses]
     });
     const probabilities = stackedProbabilities[statusKey];
     const education = d3.bisect(probabilities, Math.random());
@@ -108,8 +102,6 @@ const SankeyAnimated = ({
     (dimensions.endsBarWidth = 15),
     (dimensions.endingBarPadding = 3);
 
-  console.log("dims: ", dimensions);
-
   // Create scales
 
   const xScale = d3
@@ -120,12 +112,12 @@ const SankeyAnimated = ({
 
   const startYScale = d3
     .scaleLinear()
-    .domain([sesIds.length, -1])
+    .domain([leftDimIds.length, -1])
     .range([0, dimensions.boundedHeight]);
 
   const endYScale = d3
     .scaleLinear()
-    .domain([educationIds.length, -1])
+    .domain([rightDimIds.length, -1])
     .range([0, dimensions.boundedHeight]);
 
   const yTransitionProgressScale = d3
@@ -136,7 +128,7 @@ const SankeyAnimated = ({
 
   const colorScale = d3
     .scaleLinear()
-    .domain(d3.extent(sesIds))
+    .domain(d3.extent(leftDimIds))
     .range(["#12CBC4", "#B53471"])
     .interpolate(d3.interpolateHcl);
 
@@ -148,8 +140,8 @@ const SankeyAnimated = ({
     .y((d, i) => (i <= 2 ? startYScale(d[0]) : endYScale(d[1])))
     .curve(d3.curveMonotoneX);
   const linkOptions = d3.merge(
-    sesIds.map(startId =>
-      educationIds.map(endId => new Array(6).fill([startId, endId]))
+    leftDimIds.map(startId =>
+      rightDimIds.map(endId => new Array(6).fill([startId, endId]))
     )
   );
 
@@ -168,29 +160,29 @@ const SankeyAnimated = ({
 
     const startingLabels = startingLabelsGroup
       .selectAll(".start-label")
-      .data(sesIds)
+      .data(leftDimIds)
       .enter()
       .append("text")
       .attr("class", "label start-label")
       .attr("y", (d, i) => startYScale(i))
       .style("text-anchor", "end")
       .style("dominant-baseline", "middle")
-      .text((d, i) => sentenceCase(sesNames[i]));
+      .text((d, i) => sentenceCase(leftDim[i]));
 
     const startLabel = startingLabelsGroup
       .append("text")
       .attr("class", "start-title")
-      .attr("y", startYScale(sesIds[sesIds.length - 1]) - 65)
+      .attr("y", startYScale(leftDimIds[leftDimIds.length - 1]) - 65)
       .text("Socioeconomic");
     const startLabelLineTwo = startingLabelsGroup
       .append("text")
       .attr("class", "start-title")
-      .attr("y", startYScale(sesIds[sesIds.length - 1]) - 50)
+      .attr("y", startYScale(leftDimIds[leftDimIds.length - 1]) - 50)
       .text("Status");
 
     const startingBars = startingLabelsGroup
       .selectAll(".start-bar")
-      .data(sesIds)
+      .data(leftDimIds)
       .enter()
       .append("rect")
       .attr("x", 20)
@@ -205,7 +197,7 @@ const SankeyAnimated = ({
 
     const endingLabels = endingLabelsGroup
       .selectAll(".end-label")
-      .data(educationNames)
+      .data(rightDim)
       .enter()
       .append("text")
       .attr("class", "label end-label")
@@ -214,7 +206,7 @@ const SankeyAnimated = ({
 
     const maleMarkers = endingLabelsGroup
       .selectAll(".male-marker")
-      .data(educationIds)
+      .data(rightDimIds)
       .enter()
       .append("circle")
       .attr("class", "ending-marker male-marker")
@@ -225,7 +217,7 @@ const SankeyAnimated = ({
     const trianglePoints = ["-7,  6", " 0, -6", " 7,  6"].join(" ");
     const femaleMarkers = endingLabelsGroup
       .selectAll(".female-marker")
-      .data(educationIds)
+      .data(rightDimIds)
       .enter()
       .append("polygon")
       .attr("class", "ending-marker female-marker")
@@ -302,7 +294,7 @@ const SankeyAnimated = ({
 
       const females = markersGroup.selectAll(".marker-circle").data(
         people.filter(
-          d => xProgressAccessor(d) < 1 && categoryAccessor(d) == 0
+          d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == 0
         ),
         d => d.id
       );
@@ -316,7 +308,7 @@ const SankeyAnimated = ({
 
       const males = markersGroup.selectAll(".marker-triangle").data(
         people.filter(
-          d => xProgressAccessor(d) < 1 && categoryAccessor(d) == 1
+          d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == 1
         ),
         d => d.id
       );
@@ -333,39 +325,39 @@ const SankeyAnimated = ({
       markers
         .style("transform", d => {
           const x = xScale(xProgressAccessor(d));
-          const yStart = startYScale(leftAccessor(d));
-          const yEnd = endYScale(rightAccessor(d));
+          const yStart = startYScale(leftDimAccessor(d));
+          const yEnd = endYScale(rightDimAccessor(d));
           const yChange = yEnd - yStart;
           const yProgress = yTransitionProgressScale(xProgressAccessor(d));
           const y = yStart + yChange * yProgress + d.yJitter;
           return `translate(${x}px, ${y}px)`;
         })
-        .attr("fill", d => colorScale(leftAccessor(d)))
+        .attr("fill", d => colorScale(leftDimAccessor(d)))
         .transition()
         .duration(100)
         .style("opacity", d => (xScale(xProgressAccessor(d)) < 10 ? 0 : 1))
         .style("mix-blend-mode", "multiply");
 
-      const endingGroups = educationIds.map(endId =>
+      const endingGroups = rightDimIds.map(endId =>
         people.filter(
-          d => xProgressAccessor(d) >= 1 && rightAccessor(d) == endId
+          d => xProgressAccessor(d) >= 1 && rightDimAccessor(d) == endId
         )
       );
       const endingPercentages = d3.merge(
         endingGroups.map((peopleWithSameEnding, endingId) =>
           d3.merge(
-            sexIds.map(sexId =>
-              sesIds.map(sesId => {
+            categoryDimIds.map(sexId =>
+              leftDimIds.map(sesId => {
                 const peopleInBar = peopleWithSameEnding.filter(
-                  d => categoryAccessor(d) == sexId
+                  d => categoryDimAccessor(d) == sexId
                 );
                 const countInBar = peopleInBar.length;
                 const peopleInBarWithSameStart = peopleInBar.filter(
-                  d => leftAccessor(d) == sesId
+                  d => leftDimAccessor(d) == sesId
                 );
                 const count = peopleInBarWithSameStart.length;
                 const numberOfPeopleAbove = peopleInBar.filter(
-                  d => leftAccessor(d) > sesId
+                  d => leftDimAccessor(d) > sesId
                 ).length;
 
                 return {
