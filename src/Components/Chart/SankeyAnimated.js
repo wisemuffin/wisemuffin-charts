@@ -79,19 +79,19 @@ const SankeyAnimated = ({
   function generatePerson(elapsed) {
     currentPersonId++;
 
-    const sex = getRandomValue(categoryDimIds);
-    const ses = getRandomValue(leftDimIds);
+    const category = getRandomValue(categoryDimIds);
+    const left = getRandomValue(leftDimIds);
     const statusKey = getStatusKey({
-      sex: categoryDim[sex],
-      ses: leftDim[ses]
+      sex: categoryDim[category],
+      ses: leftDim[left]
     });
     const probabilities = stackedProbabilities[statusKey];
     const education = d3.bisect(probabilities, Math.random());
 
     return {
       id: currentPersonId,
-      sex,
-      ses,
+      sex: category,
+      ses: left,
       education,
       startTime: elapsed + getRandomNumberInRange(-0.1, 0.1),
       yJitter: getRandomNumberInRange(-15, 15)
@@ -292,6 +292,23 @@ const SankeyAnimated = ({
         people = [...people, ...d3.range(2).map(() => generatePerson(elapsed))];
       }
 
+      // TODO change male and female category to a map over catagory
+      categoryDim.map(cat => {
+        let catVal = markersGroup.selectAll(".marker-circle").data(
+          people.filter(
+            d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == cat
+          ),
+          d => d.id
+        );
+        catVal
+          .enter()
+          .append("circle")
+          .attr("class", "marker marker-circle")
+          .attr("r", 5.5)
+          .style("opacity", 0);
+        catVal.exit().remove();
+      });
+
       const females = markersGroup.selectAll(".marker-circle").data(
         people.filter(
           d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == 0
@@ -346,24 +363,24 @@ const SankeyAnimated = ({
       const endingPercentages = d3.merge(
         endingGroups.map((peopleWithSameEnding, endingId) =>
           d3.merge(
-            categoryDimIds.map(sexId =>
-              leftDimIds.map(sesId => {
+            categoryDimIds.map(categoryDimId =>
+              leftDimIds.map(leftDimId => {
                 const peopleInBar = peopleWithSameEnding.filter(
-                  d => categoryDimAccessor(d) == sexId
+                  d => categoryDimAccessor(d) == categoryDimId
                 );
                 const countInBar = peopleInBar.length;
                 const peopleInBarWithSameStart = peopleInBar.filter(
-                  d => leftDimAccessor(d) == sesId
+                  d => leftDimAccessor(d) == leftDimId
                 );
                 const count = peopleInBarWithSameStart.length;
                 const numberOfPeopleAbove = peopleInBar.filter(
-                  d => leftDimAccessor(d) > sesId
+                  d => leftDimAccessor(d) > leftDimId
                 ).length;
 
                 return {
                   endingId,
-                  sesId,
-                  sexId,
+                  leftDimId: leftDimId,
+                  categoryDimId: categoryDimId,
                   count,
                   countInBar,
                   percentAbove: numberOfPeopleAbove / (peopleInBar.length || 1),
@@ -383,8 +400,8 @@ const SankeyAnimated = ({
         .attr(
           "x",
           d =>
-            -dimensions.endsBarWidth * (d.sexId + 1) -
-            d.sexId * dimensions.endingBarPadding
+            -dimensions.endsBarWidth * (d.categoryDimId + 1) -
+            d.categoryDimId * dimensions.endingBarPadding
         )
         .attr("width", dimensions.endsBarWidth)
         .attr(
@@ -399,23 +416,25 @@ const SankeyAnimated = ({
             ? dimensions.pathHeight * d.percent
             : dimensions.pathHeight
         )
-        .attr("fill", d => (d.countInBar ? colorScale(d.sesId) : "#dadadd"));
+        .attr("fill", d =>
+          d.countInBar ? colorScale(d.leftDimId) : "#dadadd"
+        );
 
       endingLabelsGroup
         .selectAll(".ending-value")
         .data(endingPercentages)
         .join("text")
         .attr("class", "ending-value")
-        .attr("x", d => d.sesId * 33 + 47)
+        .attr("x", d => d.leftDimId * 33 + 47)
         .attr(
           "y",
           d =>
             endYScale(d.endingId) -
             dimensions.pathHeight / 2 +
-            14 * d.sexId +
+            14 * d.categoryDimId +
             35
         )
-        .attr("fill", d => (d.countInBar ? colorScale(d.sesId) : "#dadadd"))
+        .attr("fill", d => (d.countInBar ? colorScale(d.leftDimId) : "#dadadd"))
         .text(d => d.count);
     }
     d3.timer(updateMarkers);
