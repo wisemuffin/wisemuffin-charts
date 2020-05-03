@@ -293,21 +293,21 @@ const SankeyAnimated = ({
       }
 
       // TODO change male and female category to a map over catagory
-      categoryDim.map(cat => {
-        let catVal = markersGroup.selectAll(".marker-circle").data(
-          people.filter(
-            d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == cat
-          ),
-          d => d.id
-        );
-        catVal
-          .enter()
-          .append("circle")
-          .attr("class", "marker marker-circle")
-          .attr("r", 5.5)
-          .style("opacity", 0);
-        catVal.exit().remove();
-      });
+      // categoryDim.map(cat => {
+      //   let catVal = markersGroup.selectAll(".marker-circle").data(
+      //     people.filter(
+      //       d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == cat
+      //     ),
+      //     d => d.id
+      //   );
+      //   catVal
+      //     .enter()
+      //     .append("circle")
+      //     .attr("class", "marker marker-circle")
+      //     .attr("r", 5.5)
+      //     .style("opacity", 0);
+      //   catVal.exit().remove();
+      // });
 
       const females = markersGroup.selectAll(".marker-circle").data(
         people.filter(
