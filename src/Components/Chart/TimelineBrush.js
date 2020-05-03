@@ -212,9 +212,6 @@ const TimelineBrush = ({
             getEventMouse={event => {
               const { clientX, clientY } = event;
               const { left, top } = boundingClientRect;
-              // console.log(" left: ", left);
-              // console.log("clientX : ", clientX);
-              // console.log("clientX - left: ", clientX - left);
               return [
                 clientX -
                   left -

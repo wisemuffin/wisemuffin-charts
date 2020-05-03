@@ -56,6 +56,30 @@ const getData = () => ({
 const App = () => {
   const [data, setData] = useState(getData());
 
+  const dave = wide_data => {
+    var long_data = [];
+    wide_data.forEach(function(row) {
+      // Loop through all of the columns, and for each column
+      // make a new row
+      Object.keys(row).forEach(function(colname) {
+        // Ignore 'State' and 'Value' columns
+        if (colname == "sex" || colname == "ses") {
+          return;
+        }
+        long_data.push({
+          sex: row["sex"],
+          ses: row["ses"],
+          percent: row[colname],
+          education: colname
+        });
+      });
+    });
+    return long_data;
+  };
+  console.log("starting data transofrmation");
+  console.log("data: ", educationSankey);
+  console.log("education groups2: ", JSON.stringify(dave(educationSankey)));
+
   useInterval(() => {
     setData(getData());
   }, 40000);

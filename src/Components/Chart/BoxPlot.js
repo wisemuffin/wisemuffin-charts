@@ -83,15 +83,6 @@ const BoxPlot = ({
   const yAccessorScaled = d => yScale(yAccessor(d));
   const keyAccessor = (d, i) => i;
 
-  console.log("check: ", xScaleType, dimensions, data, xAccessor);
-  console.log("xScale: ", xScale(1587564000000));
-  console.log("xScale: ", xScale(1587650400000));
-  console.log("xScale fn: ", xScale);
-  console.log("yScale 0: ", yScale(0));
-  console.log("yScale 10: ", yScale(10));
-  console.log("yScale 20: ", yScale(20));
-  console.log("bins: ", bins);
-
   return (
     <BoxPlotStyle ref={ref} height={height}>
       {tooltip && (

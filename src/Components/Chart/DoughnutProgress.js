@@ -32,8 +32,6 @@ const DoughnutProgress = ({
   });
   const [tooltip, setTooltip] = useState(false);
 
-  console.log("gauge dims: ", dimensions);
-
   // set up animation
   const animationConfig = {
     to: async (next, cancel) => {

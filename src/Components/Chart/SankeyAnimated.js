@@ -20,7 +20,10 @@ import {
 const SankeyAnimated = ({
   data: dataset,
   height = "600px",
-  showLabel = true
+  showLabel = true,
+  categoryAccessor = d => d.sex,
+  leftAccessor = d => d.ses,
+  rightAccessor = d => d.education
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -29,8 +32,10 @@ const SankeyAnimated = ({
     marginBottom: 40,
     marginLeft: showLabel ? 100 : 30
   });
-  // const ref = useRef();
 
+  /***
+   * draw the chart by giving d3 control of the DOM O_O
+   */
   useEffect(() => {
     d3DoyoawThang();
     return () =>
@@ -42,11 +47,9 @@ const SankeyAnimated = ({
 
   // prep
 
-  const sexAccessor = d => d.sex;
-  const sexes = ["female", "male"];
+  const sexes = d3.map(dataset, categoryAccessor).keys();
   const sexIds = d3.range(sexes.length);
 
-  const educationAccessor = d => d.education;
   const educationNames = [
     "<High School",
     "High School",
@@ -55,10 +58,10 @@ const SankeyAnimated = ({
     "Associate's",
     "Bachelor's and up"
   ];
+
   const educationIds = d3.range(educationNames.length);
 
-  const sesAccessor = d => d.ses;
-  const sesNames = ["low", "middle", "high"];
+  const sesNames = d3.map(dataset, leftAccessor).keys();
   const sesIds = d3.range(sesNames.length);
 
   const getStatusKey = ({ sex, ses }) => [sex, ses].join("--");
@@ -298,7 +301,9 @@ const SankeyAnimated = ({
       }
 
       const females = markersGroup.selectAll(".marker-circle").data(
-        people.filter(d => xProgressAccessor(d) < 1 && sexAccessor(d) == 0),
+        people.filter(
+          d => xProgressAccessor(d) < 1 && categoryAccessor(d) == 0
+        ),
         d => d.id
       );
       females
@@ -310,7 +315,9 @@ const SankeyAnimated = ({
       females.exit().remove();
 
       const males = markersGroup.selectAll(".marker-triangle").data(
-        people.filter(d => xProgressAccessor(d) < 1 && sexAccessor(d) == 1),
+        people.filter(
+          d => xProgressAccessor(d) < 1 && categoryAccessor(d) == 1
+        ),
         d => d.id
       );
       males
@@ -326,14 +333,14 @@ const SankeyAnimated = ({
       markers
         .style("transform", d => {
           const x = xScale(xProgressAccessor(d));
-          const yStart = startYScale(sesAccessor(d));
-          const yEnd = endYScale(educationAccessor(d));
+          const yStart = startYScale(leftAccessor(d));
+          const yEnd = endYScale(rightAccessor(d));
           const yChange = yEnd - yStart;
           const yProgress = yTransitionProgressScale(xProgressAccessor(d));
           const y = yStart + yChange * yProgress + d.yJitter;
           return `translate(${x}px, ${y}px)`;
         })
-        .attr("fill", d => colorScale(sesAccessor(d)))
+        .attr("fill", d => colorScale(leftAccessor(d)))
         .transition()
         .duration(100)
         .style("opacity", d => (xScale(xProgressAccessor(d)) < 10 ? 0 : 1))
@@ -341,7 +348,7 @@ const SankeyAnimated = ({
 
       const endingGroups = educationIds.map(endId =>
         people.filter(
-          d => xProgressAccessor(d) >= 1 && educationAccessor(d) == endId
+          d => xProgressAccessor(d) >= 1 && rightAccessor(d) == endId
         )
       );
       const endingPercentages = d3.merge(
@@ -350,15 +357,15 @@ const SankeyAnimated = ({
             sexIds.map(sexId =>
               sesIds.map(sesId => {
                 const peopleInBar = peopleWithSameEnding.filter(
-                  d => sexAccessor(d) == sexId
+                  d => categoryAccessor(d) == sexId
                 );
                 const countInBar = peopleInBar.length;
                 const peopleInBarWithSameStart = peopleInBar.filter(
-                  d => sesAccessor(d) == sesId
+                  d => leftAccessor(d) == sesId
                 );
                 const count = peopleInBarWithSameStart.length;
                 const numberOfPeopleAbove = peopleInBar.filter(
-                  d => sesAccessor(d) > sesId
+                  d => leftAccessor(d) > sesId
                 ).length;
 
                 return {
@@ -432,23 +439,9 @@ const SankeyAnimated = ({
               className="category-path"
               d={linkLineGenerator(d)}
               dimensions={dimensions}
-              // style={{ transform: moveMarker(d) }}
             />
           ))}
         </g>
-        {/* <g className="startingLabelsGroup"></g> */}
-        {/* <g className="markersGroup">
-          {people
-            // .filter(d => xProgressAccessor(d) < 1 && sexAccessor(d) == 0)
-            .filter(d => sexAccessor(d) == 0)
-            .map(female => (
-              <FemaleMarker r={5.5} key={female.id} />
-            ))}
-        </g> */}
-        {/* <g
-          className="endingBarGroup"
-          style={{ transform: `translate(${dimensions.boundedWidth}, 0)` }}
-        ></g> */}
       </ChartContainer>
     </SankeyStyles>
   );

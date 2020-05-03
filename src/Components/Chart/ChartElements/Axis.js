@@ -8,7 +8,7 @@ import { useChartDimensions } from "../ChartContainer";
 
 const axisComponentsByDimension = {
   x: AxisHorizontal,
-  y: AxisVertical,
+  y: AxisVertical
 };
 const Axis = ({ dimension, ...props }) => {
   const dimensions = useChartDimensions();
@@ -31,13 +31,13 @@ Axis.propTypes = {
   dimensions: dimensionsPropsType,
   scale: PropTypes.func,
   label: PropTypes.string,
-  formatTick: PropTypes.func,
+  formatTick: PropTypes.func
 };
 
 Axis.defaultProps = {
   dimension: "x",
   scale: null,
-  formatTick: d3.format(","),
+  formatTick: d3.format(",")
 };
 
 export default Axis;
@@ -127,9 +127,8 @@ function AxisVertical({
       {label && (
         <Axis__label
           style={{
-            transform: `translate(-56px, ${
-              dimensions.boundedHeight / 2
-            }px) rotate(-90deg)`,
+            transform: `translate(-56px, ${dimensions.boundedHeight /
+              2}px) rotate(-90deg)`
           }}
         >
           {label}
