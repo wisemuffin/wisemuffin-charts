@@ -82,6 +82,7 @@ const SankeyAnimated = ({
   function generatePerson(elapsed) {
     currentPersonId++;
 
+    //convert dims to ids for performance
     const category = getRandomValue(categoryDimIds);
     const left = getRandomValue(leftDimIds);
     const statusKey = getStatusKey(categoryDim[category], leftDim[left]);
@@ -90,9 +91,9 @@ const SankeyAnimated = ({
 
     return {
       id: currentPersonId,
-      categoryDim: category,
-      ses: left,
-      education,
+      categoryDimId: category,
+      leftDimId: left,
+      rightDimId: education,
       startTime: elapsed + getRandomNumberInRange(-0.1, 0.1),
       yJitter: getRandomNumberInRange(-15, 15)
     };
@@ -316,7 +317,9 @@ const SankeyAnimated = ({
 
         let catVal = markersGroup.selectAll(".marker-circle").data(
           // people,
-          people.filter(d => xProgressAccessor(d) < 1 && d.categoryDim === cat),
+          people.filter(
+            d => xProgressAccessor(d) < 1 && d.categoryDimId === cat
+          ),
           d => d.id
         );
         catVal
@@ -395,23 +398,21 @@ const SankeyAnimated = ({
       markers
         .style("transform", d => {
           const x = xScale(xProgressAccessor(d));
-          const yStart = startYScale(leftDimAccessor(d));
-          const yEnd = endYScale(rightDimAccessor(d));
+          const yStart = startYScale(d.leftDimId);
+          const yEnd = endYScale(d.rightDimId);
           const yChange = yEnd - yStart;
           const yProgress = yTransitionProgressScale(xProgressAccessor(d));
           const y = yStart + yChange * yProgress + d.yJitter;
           return `translate(${x}px, ${y}px)`;
         })
-        .attr("fill", d => colorScale(leftDimAccessor(d)))
+        .attr("fill", d => colorScale(d.leftDimId))
         .transition()
         .duration(100)
         .style("opacity", d => (xScale(xProgressAccessor(d)) < 10 ? 0 : 1))
         .style("mix-blend-mode", "multiply");
 
       const endingGroups = rightDimIds.map(endId =>
-        people.filter(
-          d => xProgressAccessor(d) >= 1 && rightDimAccessor(d) == endId
-        )
+        people.filter(d => xProgressAccessor(d) >= 1 && d.rightDimId == endId)
       );
       const endingPercentages = d3.merge(
         endingGroups.map((peopleWithSameEnding, endingId) =>
@@ -419,15 +420,15 @@ const SankeyAnimated = ({
             categoryDimIds.map(categoryDimId =>
               leftDimIds.map(leftDimId => {
                 const peopleInBar = peopleWithSameEnding.filter(
-                  d => d.categoryDim == categoryDimId
+                  d => d.categoryDimId == categoryDimId
                 );
                 const countInBar = peopleInBar.length;
                 const peopleInBarWithSameStart = peopleInBar.filter(
-                  d => leftDimAccessor(d) == leftDimId
+                  d => d.leftDimId == leftDimId
                 );
                 const count = peopleInBarWithSameStart.length;
                 const numberOfPeopleAbove = peopleInBar.filter(
-                  d => leftDimAccessor(d) > leftDimId
+                  d => d.leftDimId > leftDimId
                 ).length;
 
                 return {
