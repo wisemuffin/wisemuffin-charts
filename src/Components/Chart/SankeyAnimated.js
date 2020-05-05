@@ -57,12 +57,15 @@ const SankeyAnimated = ({
   const rightDimIds = d3.range(rightDim.length);
   console.log("rightDim: ", JSON.stringify(rightDim));
 
-  const getStatusKey = ({ categoryDim, leftDim }) =>
+  const getStatusKey = (categoryDim, leftDim) =>
     [categoryDim, leftDim].join("--");
 
   const stackedProbabilities = {};
   dataset.forEach(startingPoint => {
-    const key = getStatusKey(startingPoint);
+    const key = getStatusKey(
+      categoryDimAccessor(startingPoint),
+      leftDimAccessor(startingPoint)
+    );
     let stackedProbability = 0;
     stackedProbabilities[key] = rightDim.map((education, i) => {
       stackedProbability += rightDimAccessor(startingPoint)[education] / 100;
@@ -81,16 +84,13 @@ const SankeyAnimated = ({
 
     const category = getRandomValue(categoryDimIds);
     const left = getRandomValue(leftDimIds);
-    const statusKey = getStatusKey({
-      sex: categoryDim[category],
-      ses: leftDim[left]
-    });
+    const statusKey = getStatusKey(categoryDim[category], leftDim[left]);
     const probabilities = stackedProbabilities[statusKey];
     const education = d3.bisect(probabilities, Math.random());
 
     return {
       id: currentPersonId,
-      sex: category,
+      categoryDim: category,
       ses: left,
       education,
       startTime: elapsed + getRandomNumberInRange(-0.1, 0.1),
@@ -316,9 +316,7 @@ const SankeyAnimated = ({
 
         let catVal = markersGroup.selectAll(".marker-circle").data(
           // people,
-          people.filter(
-            d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) === cat
-          ),
+          people.filter(d => xProgressAccessor(d) < 1 && d.categoryDim === cat),
           d => d.id
         );
         catVal
@@ -421,7 +419,7 @@ const SankeyAnimated = ({
             categoryDimIds.map(categoryDimId =>
               leftDimIds.map(leftDimId => {
                 const peopleInBar = peopleWithSameEnding.filter(
-                  d => categoryDimAccessor(d) == categoryDimId
+                  d => d.categoryDim == categoryDimId
                 );
                 const countInBar = peopleInBar.length;
                 const peopleInBarWithSameStart = peopleInBar.filter(
