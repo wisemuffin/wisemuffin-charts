@@ -56,7 +56,7 @@ const SankeyAnimated = ({
   // TODO currently assumes first row has all right dimensions
   const rightDim = Object.keys(rightDimAccessor(dataset[0]));
   const rightDimIds = d3.range(rightDim.length);
-  console.log("rightDim: ", JSON.stringify(rightDim));
+  // console.log("rightDim: ", JSON.stringify(rightDim));
 
   const getStatusKey = (categoryDim, leftDim) =>
     [categoryDim, leftDim].join("--");
@@ -88,9 +88,9 @@ const SankeyAnimated = ({
     const left = getRandomValue(leftDimIds);
     const statusKey = getStatusKey(categoryDim[category], leftDim[left]);
     const probabilities = stackedProbabilities[statusKey];
-    console.log("statusKey :", statusKey);
-    console.log("stackedProbabilities: ", stackedProbabilities);
-    console.log("probabilities", probabilities);
+    // console.log("statusKey :", statusKey);
+    // console.log("stackedProbabilities: ", stackedProbabilities);
+    // console.log("probabilities", probabilities);
     const right = d3.bisect(probabilities, Math.random());
 
     return {
@@ -297,107 +297,36 @@ const SankeyAnimated = ({
         people = [...people, ...d3.range(2).map(() => generatePerson(elapsed))];
       }
 
-      // TODO change male and female category to a map over catagory
-      // console.log("categoryDimIds: ", categoryDimIds);
-
-      console.log("categoryDimIds", categoryDimIds);
-      // TODO why cant i simple use the categoryDimIds array?
-      categoryDimIds.slice(0, 1).map((cat, i) => {
-        // console.log("cat: ", typeof cat);
-        // people.map(d => console.log("people check: ", categoryDimAccessor(d)));
-        // console.log(
-        //   "people check: ",
-        //   people.filter(
-        //     d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == cat
-        //   )
-        // );
-        // people.map(d =>
-        //   console.log("xProgressAccessor(d)", xProgressAccessor(d))
-        // );
-        // people.map(d =>
-        //   console.log("categoryDimAccessor(d)", categoryDimAccessor(d))
-        // );
-        console.log("people: ", people);
-
-        let catVal = markersGroup.selectAll(".marker-circle").data(
-          // people,
+      categoryDimIds.map((cat, i) => {
+        let catVal = markersGroup.selectAll(`.marker-${i}`).data(
           people.filter(
             d => xProgressAccessor(d) < 1 && d.categoryDimId === cat
           ),
           d => d.id
         );
-        catVal
-          .enter()
-          .append("circle")
-          .attr("class", "marker marker-circle")
-          .attr("r", 5.5)
-          .style("opacity", 0);
+
+        // TODO conditional over MORE shapes for category
+        switch ((i + 1) % 2) {
+          case 0:
+            catVal
+              .enter()
+              .append("circle")
+              .attr("class", `marker marker-${i}`)
+              .attr("r", 5.5)
+              .style("opacity", 0);
+          case 1:
+            catVal
+              .enter()
+              .append("polygon")
+              .attr("class", `marker marker-${i}`)
+              .attr("points", trianglePoints)
+              .style("opacity", 0);
+        }
+
         catVal.exit().remove();
       });
 
-      // let females = markersGroup.selectAll(".marker-circle").data(
-      //   people.filter(
-      //     d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == cat
-      //   ),
-      //   d => d.id
-      // );
-      // females
-      //   .enter()
-      //   .append("circle")
-      //   .attr("class", "marker marker-circle")
-      //   .attr("r", 5.5)
-      //   .style("opacity", 0);
-      // females.exit().remove();
-
-      // const females = markersGroup.selectAll(".marker-circle").data(
-      //   people.filter(
-      //     d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == 0
-      //   ),
-      //   d => d.id
-      // );
-      // females
-      //   .enter()
-      //   .append("circle")
-      //   .attr("class", "marker marker-circle")
-      //   .attr("r", 5.5)
-      //   .style("opacity", 0);
-      // females.exit().remove();
-
-      // const males = markersGroup.selectAll(".marker-triangle").data(
-      //   people.filter(
-      //     d => xProgressAccessor(d) < 1 && categoryDimAccessor(d) == 1
-      //   ),
-      //   d => d.id
-      // );
-      // males
-      //   .enter()
-      //   .append("polygon")
-      //   .attr("class", "marker marker-triangle")
-      //   .attr("points", trianglePoints)
-      //   .style("opacity", 0);
-      // males.exit().remove();
-
       const markers = d3.selectAll(".marker");
-
-      // console.log("markers: ", markers);
-      // console.log(Array.from(markers._groups[0])[0].__data__);
-      // Array.from(markers._groups[0]).map(d => {
-      //   const x = xScale(xProgressAccessor(d.__data__));
-      //   const yStart = startYScale(leftDimAccessor(d.__data__));
-      //   const yEnd = endYScale(rightDimAccessor(d.__data__));
-      //   const yChange = yEnd - yStart;
-      //   const yProgress = yTransitionProgressScale(
-      //     xProgressAccessor(d.__data__)
-      //   );
-      //   const y = yStart + yChange * yProgress + d.__data__.yJitter;
-      //   // return `translate(${x}px, ${y}px)`;
-      //   const fill = colorScale(leftDimAccessor(d.__data__));
-      //   const opacity = xScale(xProgressAccessor(d.__data__)) < 10 ? 0 : 1;
-      //   // console.log("x", x);
-      //   // console.log("y", y);
-      //   // console.log("fill", fill);
-      //   // console.log("opacity: ", opacity);
-      // });
 
       markers
         .style("transform", d => {
