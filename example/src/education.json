@@ -1,6 +1,32 @@
 [
     {
         "sex": "female",
+        "ses": "dave",
+        "education": {
+            "<High School": 5.4,
+            "High School": 17.1,
+            "Some Post-secondary": 36.2,
+            "Post-secondary": 16,
+            "Associate's": 9.3,
+            "Bachelor's and up": 14.9,
+            "Dave": 1
+        }
+    },
+    {
+        "sex": "male",
+        "ses": "dave",
+        "education": {
+            "<High School": 5.4,
+            "High School": 17.1,
+            "Some Post-secondary": 36.2,
+            "Post-secondary": 16,
+            "Associate's": 9.3,
+            "Bachelor's and up": 14.9,
+            "Dave": 1
+        }
+    },
+    {
+        "sex": "female",
         "ses": "low",
         "education": {
             "<High School": 5.4,
@@ -8,7 +34,8 @@
             "Some Post-secondary": 36.2,
             "Post-secondary": 16,
             "Associate's": 9.3,
-            "Bachelor's and up": 15.9
+            "Bachelor's and up": 14.9,
+            "Dave": 1
         }
     },
     {

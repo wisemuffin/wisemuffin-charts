@@ -188,7 +188,15 @@ const App = () => {
           />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>
-          <SankeyAnimated data={educationSankey} />
+          <SankeyAnimated
+            data={educationSankey}
+            height="600px"
+            showLabel={true}
+            categoryDimAccessor={d => d.sex}
+            leftDimAccessor={d => d.ses}
+            rightDimAccessor={d => d.education}
+            startingLabel="Socioeconomic status"
+          />
         </Grid>
         <Grid item xl={4} md={6} sm={12}>
           <TimelineFilteredByBrush

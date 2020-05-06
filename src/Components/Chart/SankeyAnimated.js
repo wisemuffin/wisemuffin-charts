@@ -21,9 +21,10 @@ const SankeyAnimated = ({
   data: dataset,
   height = "600px",
   showLabel = true,
-  categoryDimAccessor = d => d.sex,
-  leftDimAccessor = d => d.ses,
-  rightDimAccessor = d => d.education
+  categoryDimAccessor,
+  leftDimAccessor,
+  rightDimAccessor,
+  startingLabel
 }) => {
   const gradientId = useUniqueId("Histogram-gradient");
   const [ref, dimensions] = useChartDimensions({
@@ -87,13 +88,16 @@ const SankeyAnimated = ({
     const left = getRandomValue(leftDimIds);
     const statusKey = getStatusKey(categoryDim[category], leftDim[left]);
     const probabilities = stackedProbabilities[statusKey];
-    const education = d3.bisect(probabilities, Math.random());
+    console.log("statusKey :", statusKey);
+    console.log("stackedProbabilities: ", stackedProbabilities);
+    console.log("probabilities", probabilities);
+    const right = d3.bisect(probabilities, Math.random());
 
     return {
       id: currentPersonId,
       categoryDimId: category,
       leftDimId: left,
-      rightDimId: education,
+      rightDimId: right,
       startTime: elapsed + getRandomNumberInRange(-0.1, 0.1),
       yJitter: getRandomNumberInRange(-15, 15)
     };
@@ -174,12 +178,12 @@ const SankeyAnimated = ({
       .append("text")
       .attr("class", "start-title")
       .attr("y", startYScale(leftDimIds[leftDimIds.length - 1]) - 65)
-      .text("Socioeconomic");
-    const startLabelLineTwo = startingLabelsGroup
-      .append("text")
-      .attr("class", "start-title")
-      .attr("y", startYScale(leftDimIds[leftDimIds.length - 1]) - 50)
-      .text("Status");
+      .text(startingLabel);
+    // const startLabelLineTwo = startingLabelsGroup
+    //   .append("text")
+    //   .attr("class", "start-title")
+    //   .attr("y", startYScale(leftDimIds[leftDimIds.length - 1]) - 50)
+    //   .text(startingLabel);
 
     const startingBars = startingLabelsGroup
       .selectAll(".start-bar")

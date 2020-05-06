@@ -5,11 +5,8 @@ title: Sankey Animiated
 
 ## Description
 
-## Install
-
-```javascript
---TBC;
-```
+Displays the flow of data. Several entities (nodes) are represented by shapes that move from one categary on the left to there destingation catagory on the right.
+Animating this flow is intended to bring out some emotion!
 
 ## Component Usage
 
@@ -19,57 +16,34 @@ Sankey's flow from left to right. You need to pick which dimension you want to s
 ```javascript
 <SankeyAnimated
   data={data}
-  dimensionLeft={"ses"}
-  dimesnionRight={"education"}
-  dimensionColour={"sex"}
+  height="600px"
+  showLabel={true}
+  categoryDimAccessor={d => d.sex}
+  leftDimAccessor={d => d.ses}
+  rightDimAccessor={d => d.education}
+  startingLabel="Socioeconomic status"
 />
 ```
 
-## configuration
+## data configuration
 
-```javascript
-{
-    data: {...data},
-    leftCategory: "sex",
-    rightCategory: "ses"
-    }
-```
+the data object is an array of objects with the 3 dimensions (category, left, right) and the percentage weighting of the flow of data from left to right.
 
-example data structure
+In order to figure out the percent of flow to the right, the right dimension
+
+Example data structure:
 
 ```json
 [
   {
-    "sex": "female",
-    "ses": "low",
-    "<High School": 5.4,
+    "sex": "female", // categoryDim
+    "ses": "low", // leftDim
+    "<High School": 5.4, // proportion of rightDim value (adds to 100% when you add all other values)
     "High School": 17.1,
     "Some Post-secondary": 36.2,
     "Post-secondary": 16.0,
     "Associate's": 9.3,
     "Bachelor's and up": 15.9
-  }
-]
-```
-
-example accessors
-
-```javascript
-const categoryAccessor = d => d.sex;
-const leftAccessor = d => d.ses;
-const rightAccessor = d => d.education;
-```
-
-example data
-the data object is an array of objects with the 3 dimensions (category, left, right) and the percentage weighting of the flow of data from left to right
-
-```json
-const data = [
-  {
-    "sex": "female",
-    "ses": "low",
-    "education": "Some Post-secondary",
-    "percentage": 0.2
   }
 ]
 ```
