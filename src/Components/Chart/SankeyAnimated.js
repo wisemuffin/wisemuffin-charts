@@ -17,6 +17,8 @@ import {
   sentenceCase
 } from "../../utils";
 
+const trianglePoints = ["-7,  6", " 0, -6", " 7,  6"].join(" ");
+
 const SankeyAnimated = ({
   data: dataset,
   height = "600px",
@@ -209,76 +211,81 @@ const SankeyAnimated = ({
       .attr("y", (d, i) => endYScale(i) - 15)
       .text(d => d);
 
-    const maleMarkers = endingLabelsGroup
-      .selectAll(".male-marker")
-      .data(rightDimIds)
-      .enter()
-      .append("circle")
-      .attr("class", "ending-marker male-marker")
-      .attr("r", 5.5)
-      .attr("cx", 5)
-      .attr("cy", d => endYScale(d) + 5);
-
-    const trianglePoints = ["-7,  6", " 0, -6", " 7,  6"].join(" ");
-    const femaleMarkers = endingLabelsGroup
-      .selectAll(".female-marker")
-      .data(rightDimIds)
-      .enter()
-      .append("polygon")
-      .attr("class", "ending-marker female-marker")
-      .attr("points", trianglePoints)
-      .attr("transform", d => `translate(5, ${endYScale(d) + 20})`);
-
     const legendGroup = bounds
       .append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${dimensions.boundedWidth}, 5)`);
+      .attr("transform", `translate(${dimensions.boundedWidth}, ${5})`);
 
-    const femaleLegend = legendGroup
-      .append("g")
-      .attr(
-        "transform",
-        `translate(${-dimensions.endsBarWidth * 1.5 +
-          dimensions.endingBarPadding +
-          1}, 0)`
-      );
-    femaleLegend
-      .append("polygon")
-      .attr("points", trianglePoints)
-      .attr("transform", "translate(-7, 0)");
-    femaleLegend
-      .append("text")
-      .attr("class", "legend-text-left")
-      .text("Female")
-      .attr("x", -20)
-      .style("text-anchor", "end");
-    femaleLegend
-      .append("line")
-      .attr("class", "legend-line")
-      .attr("x1", -dimensions.endsBarWidth / 2 + 1)
-      .attr("x2", -dimensions.endsBarWidth / 2 + 1)
-      .attr("y1", 12)
-      .attr("y2", 37);
+    // for each categoryDim create a group that will be appended to the right of the vis
+    categoryDimIds.map((cat, i) => {
+      let catValRightLabel = endingLabelsGroup
+        .selectAll(`.marker-${i}`)
+        .data(rightDimIds);
 
-    const maleLegend = legendGroup
-      .append("g")
-      .attr("transform", `translate(${-dimensions.endsBarWidth / 2 - 4}, 0)`);
-    maleLegend
-      .append("circle")
-      .attr("r", 5.5)
-      .attr("transform", "translate(5, 0)");
-    maleLegend
-      .append("text")
-      .attr("class", "legend-text-right")
-      .text("Male")
-      .attr("x", 15);
-    maleLegend
-      .append("line")
-      .attr("class", "legend-line")
-      .attr("x1", dimensions.endsBarWidth / 2 - 3)
-      .attr("x2", dimensions.endsBarWidth / 2 - 3)
-      .attr("y1", 12)
-      .attr("y2", 37);
+      // TODO conditional over MORE shapes for category
+      switch ((i + 1) % 2) {
+        case 0:
+          catValRightLabel
+            .enter()
+            .append("circle")
+            .attr("class", `ending-marker ${i}-marker`)
+            .attr("r", 5.5)
+            .attr("cx", 5)
+            .attr("cy", d => endYScale(d) + 5);
+          break;
+        case 1:
+          catValRightLabel
+            .enter()
+            .append("polygon")
+            .attr("class", `ending-marker ${i}-marker`)
+            .attr("points", trianglePoints)
+            .attr("transform", d => `translate(5, ${endYScale(d) + 20})`);
+          break;
+      }
+
+      const catagoryLegend = legendGroup
+        .append("g")
+        .attr("transform", `translate(0, ${i * 15})`);
+
+      // .attr("transform", `translate(${
+      //   - dimensions.endsBarWidth * 1.5
+      //   + dimensions.endingBarPadding
+      //   + 1
+      // }, 0)`)
+      // .attr("transform", `translate(${
+      //   - dimensions.endsBarWidth / 2
+      //   - 4
+
+      // TODO conditional over MORE shapes for category
+      switch ((i + 1) % 2) {
+        case 0:
+          catagoryLegend
+            .append("circle")
+            .attr("r", 5.5)
+            .attr("transform", "translate(5, 0)");
+          break;
+        case 1:
+          catagoryLegend
+            .append("polygon")
+            .attr("points", trianglePoints)
+            .attr("transform", "translate(-7, 0)");
+          break;
+      }
+
+      catagoryLegend
+        .append("text")
+        .attr("class", "legend-text-left")
+        .text(categoryDim[cat])
+        .attr("x", -20)
+        .style("text-anchor", "end");
+      catagoryLegend
+        .append("line")
+        .attr("class", "legend-line")
+        .attr("x1", -dimensions.endsBarWidth / 2 + i * 2)
+        .attr("x2", -dimensions.endsBarWidth / 2 + i * 2)
+        .attr("y1", 12)
+        .attr("y2", 37);
+    });
 
     // Set up interactions
 
@@ -470,9 +477,5 @@ const CategoryPath = styled.path`
   stroke: #dedddc;
   stroke-width: ${props => props.dimensions.pathHeight};
 `;
-
-// const MaleMarker = styled.circle`
-//   opacity: 1;
-// `;
 
 export default SankeyAnimated;
