@@ -247,15 +247,6 @@ const SankeyAnimated = ({
         .append("g")
         .attr("transform", `translate(0, ${i * 15})`);
 
-      // .attr("transform", `translate(${
-      //   - dimensions.endsBarWidth * 1.5
-      //   + dimensions.endingBarPadding
-      //   + 1
-      // }, 0)`)
-      // .attr("transform", `translate(${
-      //   - dimensions.endsBarWidth / 2
-      //   - 4
-
       // TODO conditional over MORE shapes for category
       switch ((i + 1) % 2) {
         case 0:
