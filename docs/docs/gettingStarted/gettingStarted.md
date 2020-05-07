@@ -3,14 +3,23 @@ id: gettingStarted
 title: Getting Started
 ---
 
-# instalation
+# Install
 
-```javascript
-npm i
+```bash
+npm install --save wisemuffin-charts
 ```
 
-# running
+# Usage
 
-```javascript
-npm start
+```jsx
+import React, { Component } from "react";
+
+import MyComponent from "wisemuffin-charts";
+import "wisemuffin-charts/dist/index.css";
+
+class Example extends Component {
+  render() {
+    return <MyComponent />;
+  }
+}
 ```
