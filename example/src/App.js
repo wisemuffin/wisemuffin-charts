@@ -125,6 +125,9 @@ const App = () => {
 
   return (
     <div style={{ flexGrow: 1, backgroundColor: "#d5d7d8", padding: "2rem" }}>
+      <div>
+        <h1>Example Charts from wisemuffin-chart npm library</h1>
+      </div>
       <Grid spacing={3} container>
         <Grid item md={3} sm={4}>
           <DoughnutProgress percent={0.88} height={"200px"} />
