@@ -4,6 +4,9 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+      - echo Installing source NPM dependencies for example...
+      - cd ./example
+      - npm install
   build:
     commands:
       - echo Build started on `date`
@@ -13,7 +16,3 @@ artifacts:
   base-directory: ./build
   files:
     - "**/*"
-
-cache:
-  paths:
-    - "./node_modules/**/*"
