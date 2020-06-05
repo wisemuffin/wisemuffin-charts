@@ -22,7 +22,7 @@ export class PipelineDocs extends CDK.Stack {
   constructor(scope: CDK.App, id: string, props: PipelineProps) {
     super(scope, id, props);
 
-    const domainNameDocs = "docs." + props.route53.domainName;
+    const domainNameDocs = "docs" + props.route53.domainName;
 
     // Amazon S3 bucket to store CRA website
     const bucketWebsite = new S3.Bucket(this, "Files", {
