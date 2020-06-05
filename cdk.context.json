@@ -1,0 +1,10 @@
+{
+  "hosted-zone:account=643260079476:domainName=wisemuffin.com:region=ap-southeast-2": {
+    "Id": "/hostedzone/Z048253631YGPM6GLPBCH",
+    "Name": "wisemuffin.com."
+  },
+  "hosted-zone:account=643260079476:domainName=charts.wisemuffin.com:region=ap-southeast-2": {
+    "Id": "/hostedzone/Z0480797D4E0DVMCKRO6",
+    "Name": "charts.wisemuffin.com."
+  }
+}

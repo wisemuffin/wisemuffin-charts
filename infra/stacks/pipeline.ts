@@ -88,7 +88,6 @@ export class Pipeline extends CDK.Stack {
             this,
             "BuildWebsiteWisemuffinTemp",
             {
-              projectName: "Websitetemp",
               buildSpec: CodeBuild.BuildSpec.fromSourceFilename(
                 "./infra/buildspec.yml"
               ),
