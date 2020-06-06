@@ -2,12 +2,13 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Installing source NPM dependencies...
-      - npm install
       - echo Installing source NPM dependencies for example...
       - cd ./example
       - npm install
-      - npm i wisemuffin-charts typescript
+      - echo Installing source NPM dependencies...
+      - cd ..
+      - npm install
+      - cd ./example
   build:
     commands:
       - echo Build started on `date`
