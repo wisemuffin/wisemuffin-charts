@@ -7,7 +7,7 @@ phases:
       - echo Installing source NPM dependencies for example...
       - cd ./example
       - npm install
-      - npm i wisemuffin-charts
+      - npm i wisemuffin-charts typescript
   build:
     commands:
       - echo Build started on `date`

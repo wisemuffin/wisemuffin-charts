@@ -13,14 +13,14 @@ npm install --save wisemuffin-charts
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
-import MyComponent from 'wisemuffin-charts'
-import 'wisemuffin-charts/dist/index.css'
+import MyComponent from "wisemuffin-charts";
+import "wisemuffin-charts/dist/index.css";
 
 class Example extends Component {
   render() {
-    return <MyComponent />
+    return <MyComponent />;
   }
 }
 ```
@@ -28,3 +28,7 @@ class Example extends Component {
 ## License
 
 MIT © [wisemuffin](https://github.com/wisemuffin)
+
+# Developing
+
+in the /example package.json change to "wisemuffin-charts": "file:.."
