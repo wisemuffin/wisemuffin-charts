@@ -20,6 +20,11 @@ module.exports = {
           label: "Docs",
           position: "left"
         },
+        {
+          href: "http://charts.wisemuffin.com",
+          label: "Example Charts",
+          position: "left"
+        },
         // {to: 'blog', label: 'Blog', position: 'left'},
         {
           href: "https://github.com/wisemuffin/wisemuffin-charts",
