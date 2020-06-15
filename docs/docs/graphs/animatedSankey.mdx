@@ -3,6 +3,8 @@ id: animatedSankey
 title: Sankey Animiated
 ---
 
+<img alt="Sankey Diagram" src={"../../static/img/sankey_animated.JPG"} />
+
 ## Description
 
 Displays the flow of data. Several entities (nodes) are represented by shapes that move from one categary on the left to there destingation catagory on the right.
@@ -18,9 +20,9 @@ Sankey's flow from left to right. You need to pick which dimension you want to s
   data={data}
   height="600px"
   showLabel={true}
-  categoryDimAccessor={d => d.sex}
-  leftDimAccessor={d => d.ses}
-  rightDimAccessor={d => d.education}
+  categoryDimAccessor={(d) => d.sex}
+  leftDimAccessor={(d) => d.ses}
+  rightDimAccessor={(d) => d.education}
   startingLabel="Socioeconomic status"
 />
 ```
