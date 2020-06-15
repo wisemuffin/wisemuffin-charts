@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const ChartGeneralStyle = styled.div`
-  background: white;
   overflow: visible;
 `;
 // margin-bottom: 2em;

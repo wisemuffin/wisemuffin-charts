@@ -21,7 +21,7 @@ module.exports = {
           position: "left"
         },
         {
-          href: "http://charts.wisemuffin.com",
+          href: "http://wisemuffin.com/chartlib",
           label: "Example Charts",
           position: "left"
         },
@@ -40,47 +40,30 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Style Guide",
-              to: "docs/doc1"
+              label: "Getting Started",
+              to: "docs/gettingStarted/gettingStarted"
             },
             {
               label: "Second Doc",
-              to: "docs/doc2"
+              to: "docs/gettingStarted/keyConcepts"
             }
           ]
         },
         {
           title: "Community",
-          items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus"
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus"
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus"
-            }
-          ]
+          items: []
         },
         {
           title: "More",
           items: [
             {
-              label: "Blog",
-              to: "blog"
-            },
-            {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus"
+              href: "https://github.com/wisemuffin/wisemuffin-charts"
             }
           ]
         }
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`
+      copyright: `Copyright © ${new Date().getFullYear()} Wisemuffin-Charts, Inc. Built with Docusaurus.`
     }
   },
   presets: [

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import * as d3 from "d3";
 import Grid from "@material-ui/core/Grid";
-
-import { ExampleComponent } from "wisemuffin-charts";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 
 import {
+  ExampleComponent,
   Timeline,
   ScatterPlot,
   Histogram,
@@ -56,52 +59,22 @@ const getData = () => ({
 const App = () => {
   const [data, setData] = useState(getData());
 
-  const dave = wide_data => {
-    var long_data = [];
-    wide_data.forEach(function(row) {
-      var metrics = {};
-
-      // Loop through all of the columns, and for each column
-      // make a new row
-      Object.keys(row).forEach(function(colname) {
-        // Ignore 'State' and 'Value' columns
-        if (colname == "sex" || colname == "ses") {
-          return;
-        }
-        metrics[colname] = row[colname];
-      });
-
-      long_data.push({
-        sex: row["sex"],
-        ses: row["ses"],
-        education: metrics
-      });
-    });
-    return long_data;
-  };
-  console.log("starting data transofrmation");
-  console.log("data: ", educationSankey);
-  console.log("education groups2: ", JSON.stringify(dave(educationSankey)));
-
   useInterval(() => {
     setData(getData());
   }, 40000);
 
-  // const { data: dataKanye, loading: loadingKanye } = useFetch(
-  //   // "./education.json"
-  //   "https://api.kanye.rest"
-  // );
-
   const heatMapDataSetup = () => {
     const heatMapData = data.heatMap.sort(
-      (a, b) => new Date(a.date) - new Date(b.date)
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
     const dateValues = heatMapData.map(dv => ({
       date: d3.timeDay(new Date(dv.date)),
       value: Number(dv.value)
     }));
 
-    dateValues.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    dateValues.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
 
     const years = d3
       .nest()
@@ -124,168 +97,363 @@ const App = () => {
     .filter(d => d.metricvalue > 7 * 4);
 
   return (
-    <div style={{ flexGrow: 1, backgroundColor: "#d5d7d8", padding: "2rem" }}>
-      <div>
-        <h1>Example Charts from wisemuffin-chart npm library</h1>
+    <section style={{ backgroundColor: "#f2f7f4" }}>
+      <div style={{ flexGrow: 1, padding: "2rem" }}>
+        <Typography variant="h1" align="center" gutterBottom>
+          Examples
+        </Typography>
+        <Grid spacing={3} container>
+          <Grid item md={3} sm={4}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <DoughnutProgress percent={0.88} height={"200px"} />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Doughnut Progress
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Show progress towards a goal
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item md={3} sm={4}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Gauge label="myMetric" value={90} units={"%"} max={100} />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Gauge
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Show progress towards a goal
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Histogram
+                    data={testData
+                      .map(d => {
+                        return {
+                          date: d.date,
+                          metricvalue: Math.floor(d.metricvalue / 24)
+                        };
+                      })
+                      .filter(d => d.metricvalue <= 7 * 3)}
+                    xAccessor={d => d.metricvalue}
+                    xLabel="Age (days)"
+                    yLabel="Count of Incidents Open"
+                    numberOfThresholds={new Array(7 * 3)
+                      .fill(0)
+                      .map((arr, i) => i + 1)}
+                    nice={false}
+                    lockBinsToTicks={false}
+                    extraBar={testDataLongTail}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Histogram
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Histogram shows the distribution of data over a continuous
+                    interval or certain time period. Each bar in a histogram
+                    represents the tabulated frequency at each interval/bin.
+                    This one has the functionality to bin long tails.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={8} md={12} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <HeatMap
+                    data={heatMapDataSetup()}
+                    xAccessor={d => d.date}
+                    yAccessor={d => d.value}
+                    xTickFormat={d3.timeFormat("%d/%m/%Y")}
+                    xLabel="date"
+                    yLabel="value"
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Heatmap
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    compare rows with column based on colour to highlight
+                    outliers or trends.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <SankeyAnimated
+                    data={educationSankey}
+                    height="600px"
+                    showLabel={true}
+                    categoryDimAccessor={d => d.sex}
+                    leftDimAccessor={d => d.ses}
+                    rightDimAccessor={d => d.education}
+                    startingLabel="Socioeconomic status"
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Animated Sankey Chart
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Show the flow of data in via a equal sized sankey. Number of
+                    shapes passing to the end represent the percentage going
+                    from starting to ending bins.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <TimelineFilteredByBrush
+                    data={{
+                      series: [data.timeline, data.timeline2],
+                      dates: data.timeline.map(dateAccessor)
+                    }}
+                    xAccessor={dateAccessor}
+                    yAccessor={temperatureAccessor}
+                    xTickFormat={d3.timeFormat("%-b %-d")}
+                    xLabel="Temperature"
+                    showLabel={false}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Time line with Brush
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Utilises a second time line that show more context. The
+                    second time line allows the user to filter (brush) along the
+                    x axis.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <BoxPlot
+                    data={data.scatter}
+                    xAccessor={humidityAccessor}
+                    yAccessor={temperatureAccessor}
+                    xLabel="Humidity"
+                    yLabel="temp"
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Box Plot
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Visualise data distribution through quartiles.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Pie
+                    data={data.categorical}
+                    categoryAccessor={playerAccessor}
+                    valueAccessor={scoreAccessor}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Pie Chart
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Shows part to whole
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <BarChart
+                    data={data.categorical}
+                    yAccessor={playerAccessor}
+                    xAccessor={scoreAccessor}
+                    yLabel="Player"
+                    xLabel="Score"
+                    xTickFormat={d3.format(",")}
+                    scaleBandAxis="y"
+                    showLabel={false}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Bar Chart
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Classic
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <BarChart
+                    data={data.categorical}
+                    xAccessor={playerAccessor}
+                    yAccessor={scoreAccessor}
+                    xLabel="Player"
+                    yLabel="Score"
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Bar Chart
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Classic with x and y switched
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Timeline
+                    data={{
+                      series: [data.timeline, data.timeline2],
+                      dates: data.timeline.map(dateAccessor)
+                    }}
+                    xAccessor={dateAccessor}
+                    yAccessor={temperatureAccessor}
+                    xTickFormat={d3.timeFormat("%-b %-d")}
+                    xLabel="Date"
+                    yLabel="Temperature"
+                    // showLabel={false}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Time Line
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Shows y value over time.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <ScatterPlot
+                    data={data.scatter}
+                    xAccessor={humidityAccessor}
+                    yAccessor={temperatureAccessor}
+                    xLabel="Humidity"
+                    yLabel="Temperature"
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Scatter Plot
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Shows distribution of 2 dimensions on x and y.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xl={4} md={6} sm={12}>
+            <Card>
+              <CardActionArea>
+                <CardContent>
+                  <Histogram
+                    data={data.scatter}
+                    xAccessor={humidityAccessor}
+                    xLabel="Humidity"
+                    xScaleType="log"
+                    numberOfThresholds={20}
+                    lockBinsToTicks={false}
+                  />
+                  <Typography gutterBottom variant="h5" component="h2">
+                    Histogram
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >
+                    Histogram with a log scale. this was a terrible idea. Very
+                    hard for the consumer to understand.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        </Grid>
       </div>
-      <Grid spacing={3} container>
-        <Grid item md={3} sm={4}>
-          <DoughnutProgress percent={0.88} height={"200px"} />
-        </Grid>
-        <Grid item md={3} sm={4}>
-          <Gauge label="myMetric" units={"cm"} />
-        </Grid>
-        <Grid item md={3} sm={4}>
-          <Gauge label="myMetric" value={90} units={"%"} max={100} />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <Histogram
-            data={testData
-              .map(d => {
-                return {
-                  date: d.date,
-                  metricvalue: Math.floor(d.metricvalue / 24)
-                };
-              })
-              .filter(d => d.metricvalue <= 7 * 3)}
-            xAccessor={d => d.metricvalue}
-            xLabel="Age (days)"
-            yLabel="Count of Incidents Open"
-            numberOfThresholds={new Array(7 * 3).fill(0).map((arr, i) => i + 1)}
-            nice={false}
-            lockBinsToTicks={false}
-            extraBar={testDataLongTail}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <BoxPlot
-            data={testData
-              .map(d => {
-                return {
-                  date: d.date,
-                  metricvalue: Math.floor(d.metricvalue / 24)
-                };
-              })
-              .filter(d => d.metricvalue <= 7 * 3)}
-            xAccessor={d => d.date}
-            yAccessor={d => d.metricvalue}
-            xScaleType="time"
-            xLabel="Date"
-            yLabel="Age (days)"
-            // rangeType="minMax"
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            showOutliers={false}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <ExampleComponent text="Create React Library Example 🚀" />
-        </Grid>
-        <Grid item xl={8} md={12} sm={12}>
-          <HeatMap
-            data={heatMapDataSetup()}
-            xAccessor={d => d.date}
-            yAccessor={d => d.value}
-            xTickFormat={d3.timeFormat("%d/%m/%Y")}
-            xLabel="date"
-            yLabel="value"
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <SankeyAnimated
-            data={educationSankey}
-            height="600px"
-            showLabel={true}
-            categoryDimAccessor={d => d.sex}
-            leftDimAccessor={d => d.ses}
-            rightDimAccessor={d => d.education}
-            startingLabel="Socioeconomic status"
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <TimelineFilteredByBrush
-            data={{
-              series: [data.timeline, data.timeline2],
-              dates: data.timeline.map(dateAccessor)
-            }}
-            xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            xLabel="Temperature"
-            showLabel={false}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <BoxPlot
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            yAccessor={temperatureAccessor}
-            xLabel="Humidity"
-            yLabel="temp"
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <Pie
-            data={data.categorical}
-            categoryAccessor={playerAccessor}
-            valueAccessor={scoreAccessor}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <BarChart
-            data={data.categorical}
-            yAccessor={playerAccessor}
-            xAccessor={scoreAccessor}
-            yLabel="Player"
-            xLabel="Score"
-            xTickFormat={d3.format(",")}
-            scaleBandAxis="y"
-            showLabel={false}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <BarChart
-            data={data.categorical}
-            xAccessor={playerAccessor}
-            yAccessor={scoreAccessor}
-            xLabel="Player"
-            yLabel="Score"
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <Timeline
-            data={{
-              series: [data.timeline, data.timeline2],
-              dates: data.timeline.map(dateAccessor)
-            }}
-            xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            xTickFormat={d3.timeFormat("%-b %-d")}
-            xLabel="Date"
-            yLabel="Temperature"
-            // showLabel={false}
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <ScatterPlot
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            yAccessor={temperatureAccessor}
-            xLabel="Humidity"
-            yLabel="Temperature"
-          />
-        </Grid>
-        <Grid item xl={4} md={6} sm={12}>
-          <Histogram
-            data={data.scatter}
-            xAccessor={humidityAccessor}
-            xLabel="Humidity"
-            xScaleType="log"
-            numberOfThresholds={20}
-            lockBinsToTicks={false}
-          />
-        </Grid>
-      </Grid>
-    </div>
+    </section>
   );
 };
 
